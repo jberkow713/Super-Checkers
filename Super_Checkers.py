@@ -19,19 +19,86 @@ def draw_board(Boardsize, squares_per_row):
         for _ in range(4):
             pen.forward(Boardsize/squares_per_row)
             pen.left(90)
+                
         pen.forward(Boardsize/squares_per_row)
+    def draw_circle(Boardsize, squares_per_row, color):
+        
+        pen.speed(100)
+        pen.color(color)
+        pen.down()
+        pen.begin_fill()
+        pen.circle(((Boardsize/squares_per_row)/2))
+        pen.end_fill()
     
     for row in range(1,squares_per_row+1):
         
-        for _ in range(squares_per_row):
+        for i in range(squares_per_row):
             draw_square(Boardsize, squares_per_row)
         pen.up()
         pen.setpos((-Boardsize/2), ((-Boardsize/2)+row*(Boardsize/squares_per_row)))
         pen.down()
+    
+    pen.up()
+    pen.setpos((-Boardsize/2)+.5*(Boardsize/squares_per_row), (-Boardsize/2))    
+    #Red's Pieces
+    Red = list(range(0,2*squares_per_row))
+    #Black's Pieces
+    Black = list(range(2*squares_per_row, 4*squares_per_row))
+    
+    Black_Positions = []
+    
+    Red_Positions = []
+    
+    
+    for row in range(1, 3):
+
+        for i in range(squares_per_row):
+            
+            a = round(pen.xcor(),1)
+            b = round(pen.ycor(),1)
+            t = tuple([a,b,'normal'])
+            Red_Positions.append(t)
+
+            draw_circle(Boardsize, squares_per_row, 'red')
+            pen.forward(Boardsize/squares_per_row)
+
+        pen.up()
+        pen.setpos((-Boardsize/2)+.5*(Boardsize/squares_per_row), (-Boardsize/2)+row*(Boardsize/squares_per_row)) 
+    
+    
+    pen.up()
+    pen.setpos((-Boardsize/2)+.5*(Boardsize/squares_per_row), (Boardsize/2)-(2*(Boardsize/squares_per_row)))    
+    for row in range(squares_per_row-1,squares_per_row+1):
+        for i in range(squares_per_row):
+            a = round(pen.xcor(),1)
+            b = round(pen.ycor(),1)
+            t = tuple([a,b,'normal'])
+            Black_Positions.append(t)
+
+            draw_circle(Boardsize, squares_per_row, 'black')
+            pen.forward(Boardsize/squares_per_row)
+        
+        pen.up()
+        pen.setpos((-Boardsize/2)+.5*(Boardsize/squares_per_row), (-Boardsize/2)+row*(Boardsize/squares_per_row))
+     
+    
        
+
+    Final_Black_Dict = dict(zip(Black, Black_Positions))
+    Final_Red_Dict = dict(zip(Red, Red_Positions))
+
+    return Final_Black_Dict, Final_Red_Dict
+
+
+        
+
  
 
-draw_board(800, 8)
+A = draw_board(800, 8)
+print(A)
+
+
+#-boardsize/2, -boardsize/2
 
 #Create Checkers, Red/Black
 
@@ -71,6 +138,11 @@ draw_board(800, 8)
 
 # And that will be the game, it will continue until players quit, or ALL pieces from one color have their 
 # status as "OFF", then game will close
+
+#As statuses of pieces change, so will their colors
+#King = Blue
+#Super King = Green
+#God = Orange
 
 
 

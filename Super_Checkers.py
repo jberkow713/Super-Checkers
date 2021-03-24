@@ -62,7 +62,15 @@ draw_board(800, 8)
 # move, so they can go forward one, forward diagonal, left, then back....etc, or they can just go forward one 
 #spot, etc
 
-#TODO Create starting checkers, their coordinates, and create the dictionary that stores them
+#TODO Create starting checkers, their coordinates, and create the dictionary that stores them, so function 
+# will both map and draw the different colored checkers, and it will return a dictionary for each circle
+
+#Then we need a movement function, finds possible positions of each piece, returns an updated dictionary
+# based on movement of particular piece, and its interaction with the board and other pieces, so this function
+# will move one piece, and return updated dictionary
+
+# And that will be the game, it will continue until players quit, or ALL pieces from one color have their 
+# status as "OFF", then game will close
 
 
 

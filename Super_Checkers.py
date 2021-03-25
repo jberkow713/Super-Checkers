@@ -120,28 +120,24 @@ Red = A[1]
 Total = A[2]
 
 
-
 def find_open_spots(Black_Dict, Red_Dict, Total_Dict):
     '''
     Takes in Black and Red Dictionary of checkers, checks them against overall dictionary,
     returns open possible positions to move to
     '''
     Positions = []
-    Other_Positions = []
+    
     for v in Total_Dict.values():
         Positions.append(v)
     for v in Black_Dict.values():
         x = tuple([v[0], v[1]])
-        Other_Positions.append(x)
+        Positions.remove(x)
     for v in Red_Dict.values():
         x = tuple([v[0], v[1]])
-        Other_Positions.append(x)
-    Open_Positions = []
-    for x in Positions:
-        if x not in Other_Positions:
-            Open_Positions.append(x)       
+        Positions.remove(x)
+      
 
-    return Open_Positions
+    return Positions
 
 print(find_open_spots(A[0], A[1], A[2]))
 

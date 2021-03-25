@@ -46,7 +46,7 @@ def draw_board(Boardsize, squares_per_row):
     #Red's Pieces
     Red = list(range(0,2*squares_per_row))
     #Black's Pieces
-    Black = list(range(0,2*squares_per_row))
+    Black = list(range((squares_per_row*squares_per_row)-(2*squares_per_row),squares_per_row*squares_per_row))
     
     Black_Positions = []
     
@@ -115,7 +115,9 @@ def draw_board(Boardsize, squares_per_row):
     return Final_Black_Dict, Final_Red_Dict, Position_Dictionary
 
 A = draw_board(800, 8)
+
 Black = A[0]
+print(Black)
 Red = A[1]
 Total = A[2]
 
@@ -139,7 +141,56 @@ def find_open_spots(Black_Dict, Red_Dict, Total_Dict):
 
     return Positions
 
-print(find_open_spots(A[0], A[1], A[2]))
+# print(find_open_spots(A[0], A[1], A[2]))
+
+#Have to create function that teaches movement patterns for specific squares and their classification
+
+# Normal pieces can move forward at a left diagonal, forward, forward at a right diagonal...one space at a time
+#If a normal piece jumps another piece, it becomes a king
+
+## Kings can move any direction, one space at a time,  if it jumps a piece, it becomes a Super King
+
+### Super Kings can move any direction, 1-3 spaces at a time, but only in one consistent direction, once it jumps
+# a piece, it becomes a God
+
+#### Gods can move any direction,1-4 spaces at a time, and are able to change their direction each time they
+# move, so they can go forward one, forward diagonal, left, then back....etc, or they can just go forward one 
+#spot, etc 
+
+#The idea is to have the human cursors clicking on the starting pieces coordinates first, then moving to a new 
+#coordinate, and if the piece can move there, it draws the checker in that spot, and erases the initial checker,
+#changes the checker's coordinates, and if necessary updates its status or classification
+
+
+
+#Going to have a list before every move, based on the player's turn, of all possible open spots
+#When player clicks on spot, it identifies the piece, and the type of piece, then when clicks again,
+#It checks whether that particular piece can move to that particular spot, 
+#If so, it draws that same piece in that new spot, and erases it from the previous spot,
+#Otherwise, does nothing
+
+#Normal Movement Class Below
+
+#Normal, for Red, check its key, if key % squares_per_row !=0 or key % (squares_per_row ) !=(squares_per_row -1):
+# Then it can move to Key+squares_to_win, Key+squares_to_win -1, or Key + squares_to_win +1
+
+#If key % squares_to_win == 0:
+#Then it can move to Key + squares_to_win, and Key+squares_to_win+1
+
+#if Key % (squares_per_row) == (squares_per_row -1):
+# it can move to Key+ squares_to_win, and Key+squares_to_win - 1
+
+#Normal for Black, check its key, if key % squares_per_row !=0 or key % (squares_per_row  !=(squares_per_row -1):
+# Then it can move to Key-squares_to_win, Key-squares_to_win -1, or Key - squares_to_win +1
+
+#If key % squares_to_win == 0:
+#Then it can move to Key - squares_to_win, and Key-squares_to_win+1
+
+#if Key % (squares_per_row) == (squares_per_row -1) :
+# it can move to Key- squares_to_win, and Key-squares_to_win - 1
+
+#King Movement Class Below
+
 
 
 

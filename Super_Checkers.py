@@ -120,28 +120,76 @@ Black = A[0]
 print(Black)
 Red = A[1]
 Total = A[2]
+print(Red)
 
 
-def find_open_spots(Black_Dict, Red_Dict, Total_Dict):
+def find_open_spots():
     '''
-    Takes in Black and Red Dictionary of checkers, checks them against overall dictionary,
-    returns open possible positions to move to
+    Takes in Black and Red Dictionary of checkers as Global Variables, 
+    checks them against overall dictionary, returns open possible positions to move to
     '''
     Positions = []
     
-    for v in Total_Dict.values():
+    for v in Total.values():
         Positions.append(v)
-    for v in Black_Dict.values():
+    for v in Black.values():
         x = tuple([v[0], v[1]])
         Positions.remove(x)
-    for v in Red_Dict.values():
+    for v in Red.values():
         x = tuple([v[0], v[1]])
         Positions.remove(x)
       
 
     return Positions
 
-# print(find_open_spots(A[0], A[1], A[2]))
+print(find_open_spots())
+
+
+
+def find_piece_type(Coordinate):
+    '''
+    Creates possible spots to move to for a given piece, Use Dictionary of that piece
+    and the overall dictionary of open spots
+    '''
+    #Access Red and Black Dictionaries
+    Red_Spots = []
+    Red_Types = []
+    Black_Spots = []
+    Black_Types = []
+
+    
+    for v in Red.values():
+        x = tuple([v[0], v[1]])
+        Red_Spots.append(x)
+        Red_Types.append(v[2])
+    for v in Black.values():
+        x = tuple([v[0], v[1]])
+        Black_Spots.append(x)
+        Black_Types.append(v[2])
+
+    Red_Dict = dict(zip(Red_Spots, Red_Types))
+    Black_Dict = dict(zip(Black_Spots, Black_Types))
+
+    if Coordinate in Red_Spots:
+        for k,v in Red_Dict.items():
+            if Coordinate == k:
+                return v
+    if Coordinate in Black_Spots:
+        for k,v in Black_Dict.items():
+            if Coordinate == k:
+                return v    
+
+print(find_piece_type((-350.0, -400.0)))
+
+    
+
+
+
+
+
+
+
+
 
 #Have to create function that teaches movement patterns for specific squares and their classification
 

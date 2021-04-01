@@ -117,18 +117,20 @@ def draw_board(Boardsize, squares_per_row):
 A = draw_board(800, 8)
 
 Black = A[0]
-print(Black)
+# print(Black)
 Red = A[1]
 Total = A[2]
-print(Red)
+# print(Red)
 
 
 def find_open_spots():
     '''
     Takes in Black and Red Dictionary of checkers as Global Variables, 
-    checks them against overall dictionary, returns open possible positions to move to
+    checks them against overall dictionary, 
+    returns a dictionary of possible open spots: { Key numbers, (coordinate, coordinate), etc...}
     '''
     Positions = []
+    Key_Numbers = []
     
     for v in Total.values():
         Positions.append(v)
@@ -138,9 +140,13 @@ def find_open_spots():
     for v in Red.values():
         x = tuple([v[0], v[1]])
         Positions.remove(x)
-      
+    for k,v in Total.items():
+        for x in Positions:
+            if x == v:
+                Key_Numbers.append(k)
+    Open_Positions = dict(zip(Key_Numbers, Positions))              
 
-    return Positions
+    return Open_Positions
 
 print(find_open_spots())
 
@@ -181,4 +187,68 @@ def find_piece_type(Coordinate):
             if Coordinate == k:
                 return ('black',v,Position)    
 
-print(find_piece_type((-350.0, -400.0)))
+print(find_piece_type((350.0, 200.0)))
+
+def find_piece_movement(Coordinate, squares_per_row):
+    Piece_Description = find_piece_type(Coordinate)
+    # example of Piece_Description = ('red', 'normal', 0)
+    Possible_Spots = find_open_spots()
+    #Dictionary of open spots on the board, keys and their corresponding coordinates 
+    Possible_movement_Keys = []
+    if Piece_Description[1]== 'normal':
+        if Piece_Description[0]=='red':
+            if Piece_Description[2]< (squares_per_row*(squares_per_row-1)):
+
+                if Piece_Description[2]%squares_per_row > 0  and Piece_Description[2] % squares_per_row < squares_per_row-1:
+                    #if piece is not on an edge, and is red, and is normal
+                    Possible_movement_Keys.append(Piece_Description[2]+squares_per_row)
+                    Possible_movement_Keys.append(Piece_Description[2]+squares_per_row - 1)
+                    Possible_movement_Keys.append(Piece_Description[2] + squares_per_row+1)
+                elif Piece_Description[2]% squares_per_row == 0:
+                    #piece is on far left edge of board
+                    Possible_movement_Keys.append(Piece_Description[2]+squares_per_row)
+                    Possible_movement_Keys.append(Piece_Description[2]+squares_per_row+1)
+                elif Piece_Description[2]% squares_per_row == (squares_per_row-1):
+                    #piece is on far right edge of board
+                    Possible_movement_Keys.append(Piece_Description[2]+squares_per_row)
+                    Possible_movement_Keys.append(Piece_Description[2]+squares_per_row-1)  
+        if Piece_Description[0]=='black':
+            if Piece_Description[2]>(squares_per_row-1):
+                if Piece_Description[2]%squares_per_row > 0  and Piece_Description[2] % squares_per_row < squares_per_row-1:
+                    #if piece is not on an edge, and is red, and is normal
+                    Possible_movement_Keys.append(Piece_Description[2]-squares_per_row)
+                    Possible_movement_Keys.append(Piece_Description[2]-squares_per_row - 1)
+                    Possible_movement_Keys.append(Piece_Description[2] - squares_per_row+1)
+                elif Piece_Description[2]% squares_per_row == 0:
+                    #piece is on far left edge of board
+                    Possible_movement_Keys.append(Piece_Description[2]-squares_per_row)
+                    Possible_movement_Keys.append(Piece_Description[2]-squares_per_row+1)
+                elif Piece_Description[2]% squares_per_row == (squares_per_row-1):
+                    #piece is on far right edge of board
+                    Possible_movement_Keys.append(Piece_Description[2]-squares_per_row)
+                    Possible_movement_Keys.append(Piece_Description[2]-squares_per_row-1)  
+    Possible_Coordinates = []
+    print(Possible_movement_Keys)
+    for x in Possible_movement_Keys:
+        for k,v in Possible_Spots.items():
+            if x == k:
+                Possible_Coordinates.append(v)
+    return Possible_Coordinates            
+
+print(find_piece_movement((350.0, 200.0), 8))
+turtle.done()
+
+
+
+#Create function to find invididual movement based on piece type
+
+
+
+# Normal for Black, check its key, if key % squares_per_row !=0 or key % (squares_per_row  !=(squares_per_row -1):
+# Then it can move to Key-squares_to_win, Key-squares_to_win -1, or Key - squares_to_win +1
+
+# If key % squares_to_win == 0:
+# Then it can move to Key - squares_to_win, and Key-squares_to_win+1
+
+# if Key % (squares_per_row) == (squares_per_row -1) :
+# it can move to Key- squares_to_win, and Key-squares_to_win - 1   

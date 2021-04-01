@@ -240,19 +240,23 @@ def find_piece_movement(Coordinate, squares_per_row):
     #This is going to take care of all movement that doesn't run into piece of opposite color
     print(Possible_movement_Keys)
     if Possible_movement_Keys[0]=='black':
+        #Check to see if spots it can move to are red, for jumping
         for x in Possible_movement_Keys:
             for k,v in Red.items():
                 if x == k:
                     Possible_Jumps.append(v)
             for k,v in Possible_Spots.items():
+                #if spots are empty
                 if x == k:
                     Possible_Coordinates.append(v)
     if Possible_movement_Keys[0]=='red':
+        #Check to see if spots it can move to are black, for jumping
         for x in Possible_movement_Keys:
             for k,v in Black.items():
                 if x == k:
                     Possible_Jumps.append(v)
             for k,v in Possible_Spots.items():
+                #if spots are empty
                 if x == k:
                     Possible_Coordinates.append(v)
     

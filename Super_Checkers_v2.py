@@ -187,9 +187,14 @@ def find_piece_type(Coordinate):
             if Coordinate == k:
                 return ('black',v,Position)    
 
-print(find_piece_type((350.0, 200.0)))
+print(find_piece_type((-350.0, -300.0)))
 
 def find_piece_movement(Coordinate, squares_per_row):
+    '''
+    Movement function, takes in Coordinate of piece, and squares per row,
+    returns list of possible coordinates of possible moves, will make separate function for jumping
+    This function only uses basic movement, it does not incorporate jumping
+    '''
     Piece_Description = find_piece_type(Coordinate)
     # example of Piece_Description = ('red', 'normal', 0)
     Possible_Spots = find_open_spots()
@@ -198,6 +203,7 @@ def find_piece_movement(Coordinate, squares_per_row):
     if Piece_Description[1]== 'normal':
         if Piece_Description[0]=='red':
             if Piece_Description[2]< (squares_per_row*(squares_per_row-1)):
+                Possible_movement_Keys.append('red')
 
                 if Piece_Description[2]%squares_per_row > 0  and Piece_Description[2] % squares_per_row < squares_per_row-1:
                     #if piece is not on an edge, and is red, and is normal
@@ -214,6 +220,7 @@ def find_piece_movement(Coordinate, squares_per_row):
                     Possible_movement_Keys.append(Piece_Description[2]+squares_per_row-1)  
         if Piece_Description[0]=='black':
             if Piece_Description[2]>(squares_per_row-1):
+                Possible_movement_Keys.append('black')
                 if Piece_Description[2]%squares_per_row > 0  and Piece_Description[2] % squares_per_row < squares_per_row-1:
                     #if piece is not on an edge, and is red, and is normal
                     Possible_movement_Keys.append(Piece_Description[2]-squares_per_row)
@@ -227,28 +234,32 @@ def find_piece_movement(Coordinate, squares_per_row):
                     #piece is on far right edge of board
                     Possible_movement_Keys.append(Piece_Description[2]-squares_per_row)
                     Possible_movement_Keys.append(Piece_Description[2]-squares_per_row-1)  
+    
     Possible_Coordinates = []
+    Possible_Jumps = []
+    #This is going to take care of all movement that doesn't run into piece of opposite color
     print(Possible_movement_Keys)
-    for x in Possible_movement_Keys:
-        for k,v in Possible_Spots.items():
-            if x == k:
-                Possible_Coordinates.append(v)
-    return Possible_Coordinates            
+    if Possible_movement_Keys[0]=='black':
+        for x in Possible_movement_Keys:
+            for k,v in Red.items():
+                if x == k:
+                    Possible_Jumps.append(v)
+            for k,v in Possible_Spots.items():
+                if x == k:
+                    Possible_Coordinates.append(v)
+    if Possible_movement_Keys[0]=='red':
+        for x in Possible_movement_Keys:
+            for k,v in Black.items():
+                if x == k:
+                    Possible_Jumps.append(v)
+            for k,v in Possible_Spots.items():
+                if x == k:
+                    Possible_Coordinates.append(v)
+    
+    return Possible_Coordinates, Possible_Jumps            
 
-print(find_piece_movement((350.0, 200.0), 8))
+print(find_piece_movement((-350.0, -300.00), 8))
 turtle.done()
 
 
 
-#Create function to find invididual movement based on piece type
-
-
-
-# Normal for Black, check its key, if key % squares_per_row !=0 or key % (squares_per_row  !=(squares_per_row -1):
-# Then it can move to Key-squares_to_win, Key-squares_to_win -1, or Key - squares_to_win +1
-
-# If key % squares_to_win == 0:
-# Then it can move to Key - squares_to_win, and Key-squares_to_win+1
-
-# if Key % (squares_per_row) == (squares_per_row -1) :
-# it can move to Key- squares_to_win, and Key-squares_to_win - 1   

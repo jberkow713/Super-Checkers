@@ -127,7 +127,8 @@ def find_open_spots():
     '''
     Takes in Black and Red Dictionary of checkers as Global Variables, 
     checks them against overall dictionary, 
-    returns a dictionary of possible open spots: { Key numbers, (coordinate, coordinate), etc...}
+    returns a dictionary of possible open spots basically not being occupied
+    by Red or Black pieces: { Key numbers, (coordinate, coordinate), etc...}
     '''
     Positions = []
     Key_Numbers = []
@@ -196,52 +197,132 @@ def find_piece_movement(Coordinate, squares_per_row):
     This function only uses basic movement, it does not incorporate jumping
     '''
     Piece_Description = find_piece_type(Coordinate)
+    Color = Piece_Description[0]
+    Type = Piece_Description[1]
+    Index = Piece_Description[2]
     # example of Piece_Description = ('red', 'normal', 0)
     Possible_Spots = find_open_spots()
     #Dictionary of open spots on the board, keys and their corresponding coordinates 
-    Possible_movement_Keys = []
-    if Piece_Description[1]== 'normal':
-        if Piece_Description[0]=='red':
-            if Piece_Description[2]< (squares_per_row*(squares_per_row-1)):
-                Possible_movement_Keys.append('red')
+    Moves = []
+    if Type== 'normal':
+        if Color=='red':
+            if Index< (squares_per_row*(squares_per_row-1)):
+                Moves.append('red')
 
-                if Piece_Description[2]%squares_per_row > 0  and Piece_Description[2] % squares_per_row < squares_per_row-1:
+                if Index%squares_per_row > 0  and Index % squares_per_row < squares_per_row-1:
                     #if piece is not on an edge, and is red, and is normal
-                    Possible_movement_Keys.append(Piece_Description[2]+squares_per_row)
-                    Possible_movement_Keys.append(Piece_Description[2]+squares_per_row - 1)
-                    Possible_movement_Keys.append(Piece_Description[2] + squares_per_row+1)
-                elif Piece_Description[2]% squares_per_row == 0:
+                    Moves.append(Index+squares_per_row)
+                    Moves.append(Index+squares_per_row - 1)
+                    Moves.append(Index + squares_per_row+1)
+                elif Index % squares_per_row == 0:
                     #piece is on far left edge of board
-                    Possible_movement_Keys.append(Piece_Description[2]+squares_per_row)
-                    Possible_movement_Keys.append(Piece_Description[2]+squares_per_row+1)
+                    Moves.append(Index+squares_per_row)
+                    Moves.append(Index+squares_per_row+1)
                 elif Piece_Description[2]% squares_per_row == (squares_per_row-1):
                     #piece is on far right edge of board
-                    Possible_movement_Keys.append(Piece_Description[2]+squares_per_row)
-                    Possible_movement_Keys.append(Piece_Description[2]+squares_per_row-1)  
-        if Piece_Description[0]=='black':
-            if Piece_Description[2]>(squares_per_row-1):
-                Possible_movement_Keys.append('black')
-                if Piece_Description[2]%squares_per_row > 0  and Piece_Description[2] % squares_per_row < squares_per_row-1:
+                    Moves.append(Index+squares_per_row)
+                    Moves.append(Index+squares_per_row-1)  
+        if Color=='black':
+            if Index>(squares_per_row-1):
+                Moves.append('black')
+                if Index%squares_per_row > 0  and Index % squares_per_row < squares_per_row-1:
                     #if piece is not on an edge, and is red, and is normal
-                    Possible_movement_Keys.append(Piece_Description[2]-squares_per_row)
-                    Possible_movement_Keys.append(Piece_Description[2]-squares_per_row - 1)
-                    Possible_movement_Keys.append(Piece_Description[2] - squares_per_row+1)
-                elif Piece_Description[2]% squares_per_row == 0:
+                    Moves.append(Index-squares_per_row)
+                    Moves.append(Index-squares_per_row - 1)
+                    Moves.append(Index - squares_per_row+1)
+                elif Index% squares_per_row == 0:
                     #piece is on far left edge of board
-                    Possible_movement_Keys.append(Piece_Description[2]-squares_per_row)
-                    Possible_movement_Keys.append(Piece_Description[2]-squares_per_row+1)
-                elif Piece_Description[2]% squares_per_row == (squares_per_row-1):
+                    Moves.append(Index-squares_per_row)
+                    Moves.append(Index-squares_per_row+1)
+                elif Index % squares_per_row == (squares_per_row-1):
                     #piece is on far right edge of board
-                    Possible_movement_Keys.append(Piece_Description[2]-squares_per_row)
-                    Possible_movement_Keys.append(Piece_Description[2]-squares_per_row-1)  
-    
+                    Moves.append(Index-squares_per_row)
+                    Moves.append(Index-squares_per_row-1)  
+    if Type == 'King':
+        if Index%squares_per_row > 0  and Index % squares_per_row < squares_per_row-1:
+            if Index>(squares_per_row-1) and Index< (squares_per_row*(squares_per_row-1)):
+
+               #King in middle area of board
+                Moves.append(Index-squares_per_row-1)
+                Moves.append(Index-squares_per_row)
+                Moves.append(Index-squares_per_row+1)
+                Moves.append(Index-1)
+                Moves.append(Index+1)
+                Moves.append(Index+squares_per_row-1)
+                Moves.append(Index+squares_per_row)
+                Moves.append(Index+squares_per_row+1)
+                          
+
+            elif Index < squares_per_row:
+
+                # Piece is not on an edge, but is at bottom row of board
+                Moves.append(Index-1)
+                Moves.append(Index+1)
+                Moves.append(Index+squares_per_row-1)
+                Moves.append(Index+squares_per_row)
+                Moves.append(Index+squares_per_row+1)
+            elif Index >= squares_per_row*(squares_per_row-1):
+                Moves.append(Index-squares_per_row-1)
+                Moves.append(Index-squares_per_row)
+                Moves.append(Index-squares_per_row+1)
+                Moves.append(Index-1)
+                Moves.append(Index+1)
+        if Index% squares_per_row == 0:
+            #King on the left side of board
+            if Index>(squares_per_row-1) and Index< (squares_per_row*(squares_per_row-1)):
+                
+                Moves.append(Index-squares_per_row)
+                Moves.append(Index-squares_per_row+1)
+                Moves.append(Index+1)
+                Moves.append(Index+squares_per_row)
+                Moves.append(Index+squares_per_row+1)
+            elif Index < squares_per_row:
+                Moves.append(Index-squares_per_row+1)
+                Moves.append(Index+1)
+                Moves.append(Index+squares_per_row+1)
+            elif Index >= squares_per_row*(squares_per_row-1):
+                Moves.append(Index+1)
+                Moves.append(Index-squares_per_row)
+                Moves.append(Index-squares_per_row+1)
+        if Index % squares_per_row == squares_per_row-1:
+            #King on the Right side of the board
+            if Index>(squares_per_row-1) and Index< (squares_per_row*(squares_per_row-1)):
+                Moves.append(Index-squares_per_row-1)
+                Moves.append(Index-squares_per_row)
+                Moves.append(Index-1)
+                Moves.append(Index+squares_per_row-1)
+                Moves.append(Index+squares_per_row)
+            elif Index < squares_per_row:
+                Moves.append(Index-1)
+                Moves.append(Index+squares_per_row-1)
+                Moves.append(Index+squares_per_row)
+            elif Index >= squares_per_row*(squares_per_row-1):
+                Moves.append(Index-1)
+                Moves.append(Index-squares_per_row)
+                Moves.append(Index-squares_per_row-1)
+
+
+                
+
+
+
+
+
+                 
+
+
+
+
+
+
+
     Possible_Coordinates = []
     Possible_Jumps = []
     #This is going to take care of all movement that doesn't run into piece of opposite color
-    print(Possible_movement_Keys)
-    if Possible_movement_Keys[0]=='black':
+    print(Moves)
+    if Color=='black':
         #Check to see if spots it can move to are red, for jumping
-        for x in Possible_movement_Keys:
+        for x in Moves:
             for k,v in Red.items():
                 if x == k:
                     Possible_Jumps.append(v)
@@ -249,9 +330,9 @@ def find_piece_movement(Coordinate, squares_per_row):
                 #if spots are empty
                 if x == k:
                     Possible_Coordinates.append(v)
-    if Possible_movement_Keys[0]=='red':
+    if Color=='red':
         #Check to see if spots it can move to are black, for jumping
-        for x in Possible_movement_Keys:
+        for x in Moves:
             for k,v in Black.items():
                 if x == k:
                     Possible_Jumps.append(v)

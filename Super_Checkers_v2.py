@@ -277,8 +277,8 @@ def find_piece_movement(Coordinate, squares_per_row):
                 Moves.append(Index+squares_per_row)
                 Moves.append(Index+squares_per_row+1)
             elif Index < squares_per_row:
-                Moves.append(Index-squares_per_row+1)
                 Moves.append(Index+1)
+                Moves.append(Index+squares_per_row)
                 Moves.append(Index+squares_per_row+1)
             elif Index >= squares_per_row*(squares_per_row-1):
                 Moves.append(Index+1)
@@ -300,19 +300,6 @@ def find_piece_movement(Coordinate, squares_per_row):
                 Moves.append(Index-1)
                 Moves.append(Index-squares_per_row)
                 Moves.append(Index-squares_per_row-1)
-
-
-                
-
-
-
-
-
-                 
-
-
-
-
 
 
 
@@ -340,10 +327,46 @@ def find_piece_movement(Coordinate, squares_per_row):
                 #if spots are empty
                 if x == k:
                     Possible_Coordinates.append(v)
-    
-    return Possible_Coordinates, Possible_Jumps            
+    #Jumps represent spots of opposite color in the way, only way they can actually be jumps, is if the spot behind them
+    # in the direction from the piece, is empty, meaning it is in the Possible_Spots Dictionary
+    Actual_Jumps = []
+    for piece in Possible_Jumps:
+        #For most pieces this will work, but not if the jump is moving off the edge of the board
+        Piece_index = find_piece_type(piece)[2]
+        if Piece_index % squares_per_row != 0 and Piece_index % squares_per_row != (squares_per_row-1) \
+            and Piece_index < (squares_per_row  * (squares_per_row-1)) and Piece_index> (squares_per_row-1):
+        
+            Direction = Piece_index - Index
+            Jump_to_index = Piece_index+Direction
+            for k,v in Possible_Spots.items():
+                if Jump_to_index == k:
+                    Actual_Jumps.append(v)
+
+    return Possible_Coordinates, Actual_Jumps           
 
 print(find_piece_movement((-350.0, -300.00), 8))
+
+# this is an example of returned data from find_piece_movement
+# ([(-350.0, -200.0), (-250.0, -200.0)], [])
+#A tuple of lists, first list contains all possible open spots to move to, 2nd list contains all possible jumps
+
+#If the player chooses to move to the empty spot, we need to swap the piece's values with the empty space
+
+#If the player chooses to jump the opponent's piece, we need to check if there is a clear path from the current piece, to jump over
+# the jumped spot, to an open area, if not, it can not jump
+
+# we need to first clear the opponent's piece from the board,
+#Need to keep track of the pieces that have been taken off for both colors, game ends when one player has 16 pieces off
+
+#Then we need to upgrade the piece that jumped, and then run the find_piece_movement function again, using the new position,
+#But also using the new type,
+# if in the returned info, the jump list is empty, it will move, and turn will end
+#  if it can not jump again, then it stays in it's spot, 
+#otherwise, we run it again
+
+
+
+
 turtle.done()
 
 

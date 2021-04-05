@@ -103,25 +103,43 @@ def draw_board(Boardsize, squares_per_row):
         a = starting_x_cord
         b = starting_y_cord
         
+    Total_Squares_2 = list(range(0,squares_per_row*squares_per_row))
+    Tuple_Position_List_2 = []
+    starting_x_cord = (-Boardsize/2)+.5*(Boardsize/squares_per_row)
+    starting_y_cord = (-Boardsize/2)+((Boardsize/squares_per_row)/2)
+    a = starting_x_cord
+    b = starting_y_cord
+    for i in range(0, squares_per_row):
+        
+        b+= i*(Boardsize/squares_per_row)
+                
+        for _ in range(squares_per_row):
+            tup = tuple([a,b])
+            Tuple_Position_List_2.append(tup)
+            a += Boardsize/squares_per_row
+        
+        a = starting_x_cord
+        b = starting_y_cord
 
 
-
-       
+    Position_Dictionary_2 = dict(zip(Total_Squares_2, Tuple_Position_List_2))     
     Position_Dictionary = dict(zip(Total_Squares, Tuple_Position_List))
     Final_Black_Dict = dict(zip(Black, Black_Positions))
     Final_Red_Dict = dict(zip(Red, Red_Positions))
 
 
-    return Final_Black_Dict, Final_Red_Dict, Position_Dictionary
+    return Final_Black_Dict, Final_Red_Dict, Position_Dictionary, Position_Dictionary_2
 
 A = draw_board(800, 8)
 
 Black = A[0]
-# print(Black)
 Red = A[1]
 Total = A[2]
-# print(Red)
-
+#Total is list of actual coordinates of all indices
+Total_Up = A[3]
+#Total_Up is list of coordinates to be highlighted for user, in middle of squares, for all indices
+print(Total)
+print(Total_Up)
 
 def find_open_spots():
     '''
@@ -149,7 +167,7 @@ def find_open_spots():
 
     return Open_Positions
 
-print(find_open_spots())
+# print(find_open_spots())
 
 
 
@@ -188,7 +206,7 @@ def find_piece_type(Coordinate):
             if Coordinate == k:
                 return ('black',v,Position)    
 
-print(find_piece_type((-350.0, -300.0)))
+# print(find_piece_type((-350.0, -300.0)))
 
 def find_piece_movement(Coordinate, squares_per_row):
     '''
@@ -207,7 +225,7 @@ def find_piece_movement(Coordinate, squares_per_row):
     if Type== 'normal':
         if Color=='red':
             if Index< (squares_per_row*(squares_per_row-1)):
-                Moves.append('red')
+                
 
                 if Index%squares_per_row > 0  and Index % squares_per_row < squares_per_row-1:
                     #if piece is not on an edge, and is red, and is normal
@@ -224,7 +242,7 @@ def find_piece_movement(Coordinate, squares_per_row):
                     Moves.append(Index+squares_per_row-1)  
         if Color=='black':
             if Index>(squares_per_row-1):
-                Moves.append('black')
+                
                 if Index%squares_per_row > 0  and Index % squares_per_row < squares_per_row-1:
                     #if piece is not on an edge, and is red, and is normal
                     Moves.append(Index-squares_per_row)
@@ -303,69 +321,60 @@ def find_piece_movement(Coordinate, squares_per_row):
 
 
 
-    Possible_Coordinates = []
+    
     Possible_Jumps = []
-    #This is going to take care of all movement that doesn't run into piece of opposite color
-    print(Moves)
+        
     if Color=='black':
         #Check to see if spots it can move to are red, for jumping
         for x in Moves:
-            for k,v in Red.items():
+            for k in Red.keys():
                 if x == k:
-                    Possible_Jumps.append(v)
-            for k,v in Possible_Spots.items():
-                #if spots are empty
-                if x == k:
-                    Possible_Coordinates.append(v)
+                    Possible_Jumps.append(x)
+            
     if Color=='red':
         #Check to see if spots it can move to are black, for jumping
         for x in Moves:
-            for k,v in Black.items():
+            for k in Black.keys():
                 if x == k:
-                    Possible_Jumps.append(v)
-            for k,v in Possible_Spots.items():
-                #if spots are empty
-                if x == k:
-                    Possible_Coordinates.append(v)
+                    Possible_Jumps.append(x)
+            
     #Jumps represent spots of opposite color in the way, only way they can actually be jumps, is if the spot behind them
     # in the direction from the piece, is empty, meaning it is in the Possible_Spots Dictionary
-    Actual_Jumps = []
-    Jumped_Pieces = []
+    Jump_Options = []
     for piece in Possible_Jumps:
         #For most pieces this will work, but not if the jump is moving off the edge of the board
-        Piece_Info = find_piece_type(piece)
-        Piece_index = find_piece_type(piece)[2]
-        if Piece_index % squares_per_row != 0 and Piece_index % squares_per_row != (squares_per_row-1) \
-            and Piece_index < (squares_per_row  * (squares_per_row-1)) and Piece_index> (squares_per_row-1):
         
-            Direction = Piece_index - Index
-            Jump_to_index = Piece_index+Direction
-            for k,v in Possible_Spots.items():
+        if piece % squares_per_row != 0 and piece % squares_per_row != (squares_per_row-1) \
+            and piece < (squares_per_row  * (squares_per_row-1)) and piece> (squares_per_row-1):
+        
+            Direction = piece - Index
+            Jump_to_index = piece+Direction
+            for k in Possible_Spots.keys():
                 if Jump_to_index == k:
-                    Actual_Jumps.append(v)
-                    Jumped_Pieces.append(Piece_Info)
+                    Jump_Options.append(Jump_to_index)
+   
 
-    Jumped_Dict = dict(zip(Jumped_Pieces, Actual_Jumps))
-    #tuple of jumped pieces info as key, finishing coordinates as value
-
-    return Possible_Coordinates, Jumped_Dict           
+    return Moves, Jump_Options          
 
 print(find_piece_movement((-350.0, -300.00), 8))
 
-# this is an example of returned data from find_piece_movement
-# ([(-350.0, -200.0), (-250.0, -200.0)], [])
-#A tuple of lists, first list contains all possible open spots to move to, 2nd list contains all possible jumps
+#player will click on coordinate, or computer will move to random coordinate,
+#The coordinate will trigger find_piece_movement
+# 2 lists will be returned, a list of non jumpable moves, and a list of jumpable moves, all based on the index
 
-#If the player chooses to move to the empty spot, we need to swap the piece's values with the empty space
-#turn is over after the move
+# So we access Total_Up dictionary, which gives the coordinate in the middle of the possible index, and we need to 
+# draw some kind of small circle , showing user that these are the spots he can go to
+# Once the user clicks on the small circle he chooses to move to, it will refer back to the Total dictionary, 
+#Move to that coordinate, and the piece will be redrawn based on these coordinates, the original piece will be erased from the board
+#meaning there has to be a function to basically erase the old index, just fill in the square in between the lines with white
 
-# If player chooses to jump opponent's piece, we need to first clear the opponent's piece from the board,
-#Need to keep track of the pieces that have been taken off for both colors, game ends when one player has 16 pieces off
+#Once the piece moves to the new coordinate, the index of the piece in that specific color dictionary, needs to be
+#changed to the new index, and if possible, the type of piece needs to be altered as well. If the type of piece changes, 
+# The color of the piece needs to be changed, to say Orange for Red's pieces, and Blue for Black's pieces, indicating that piece
+# is now a king
 
-
-
-#So, Possible Coordinates represents open spots to move to, Jumped_Dict represents possible pieces to jump and ending coordinates
-#Now need to make a function to update the moving piece, as well as potentially the pieces that are jumped
+# If player chooses to jump opponent's piece, we need to also clear the opponent's piece from the board, change it's value in its
+#own dictionary, add it to the "knocked out" list
 
 
 

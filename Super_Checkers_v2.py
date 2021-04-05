@@ -208,12 +208,13 @@ def find_piece_type(Coordinate):
 
 # print(find_piece_type((-350.0, -300.0)))
 
-def find_piece_movement(Coordinate, squares_per_row):
+def find_piece_movement(Coordinate):
     '''
     Movement function, takes in Coordinate of piece, and squares per row,
     returns list of possible coordinates of possible moves, will make separate function for jumping
     This function only uses basic movement, it does not incorporate jumping
     '''
+    squares_per_row=8
     Piece_Description = find_piece_type(Coordinate)
     Color = Piece_Description[0]
     Type = Piece_Description[1]
@@ -356,7 +357,7 @@ def find_piece_movement(Coordinate, squares_per_row):
 
     return Moves, Jump_Options          
 
-print(find_piece_movement((-350.0, -300.00), 8))
+print(find_piece_movement((-350.0, -300.00)))
 
 #player will click on coordinate, or computer will move to random coordinate,
 #The coordinate will trigger find_piece_movement

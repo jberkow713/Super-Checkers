@@ -138,8 +138,8 @@ Total = A[2]
 #Total is list of actual coordinates of all indices
 Total_Up = A[3]
 #Total_Up is list of coordinates to be highlighted for user, in middle of squares, for all indices
-print(Total)
-print(Total_Up)
+# print(Total)
+# print(Total_Up)
 
 def find_open_spots():
     '''
@@ -324,20 +324,26 @@ def find_piece_movement(Coordinate):
 
     
     Possible_Jumps = []
-        
+       
     if Color=='black':
-        #Check to see if spots it can move to are red, for jumping
-        for x in Moves:
-            for k in Red.keys():
-                if x == k:
-                    Possible_Jumps.append(x)
+        new_moves = [x for x in Moves if x not in Black.keys()]
+                  
+        if Color=='black':
+            #Check to see if spots it can move to are red, for jumping
+            for x in new_moves:                
+                for k in Red.keys():
+                    if x == k:
+                        Possible_Jumps.append(x)
             
     if Color=='red':
-        #Check to see if spots it can move to are black, for jumping
-        for x in Moves:
-            for k in Black.keys():
-                if x == k:
-                    Possible_Jumps.append(x)
+        new_moves = [x for x in Moves if x not in Red.keys()]
+                        
+        if Color=='red':
+            #Check to see if spots it can move to are red, for jumping
+            for x in new_moves:                
+                for k in Black.keys():
+                    if x == k:
+                        Possible_Jumps.append(x)
             
     #Jumps represent spots of opposite color in the way, only way they can actually be jumps, is if the spot behind them
     # in the direction from the piece, is empty, meaning it is in the Possible_Spots Dictionary
@@ -355,7 +361,7 @@ def find_piece_movement(Coordinate):
                     Jump_Options.append(Jump_to_index)
    
 
-    return Moves, Jump_Options          
+    return new_moves, Jump_Options          
 
 print(find_piece_movement((-350.0, -300.00)))
 
@@ -410,12 +416,35 @@ def move_down():
         y = -350
     player.sety(y)
     player.setpos(player.xcor(), y)
+    
+def choose_piece():
+    position = player.pos()
+    index = []
+    for k,v in Total_Up.items():
+        if v == position:
+            index.append(k)
+    print(index[0])        
+    for k,v in Red.items():
+        if k == index[0]:
+            coords = tuple([v[0], v[1]])
+            print(coords)
+            possible_spots = find_piece_movement((coords))
+            print(possible_spots)
+            
+    for k,v in Black.items():
+        if k == index[0]:
+            coords = tuple([v[0], v[1]])
+            print(coords)
+            possible_spots = find_piece_movement((coords))
+            print(possible_spots)
+            
 
 turtle.listen()
 turtle.onkey(move_left, "Left") 
 turtle.onkey(move_right, "Right")
 turtle.onkey(move_up, "Up") 
-turtle.onkey(move_down, "Down")    
+turtle.onkey(move_down, "Down")
+turtle.onkey(choose_piece, "space")    
 
 #TODO create function that will light up board, based on player movement, for a particular piece, as to 
 #where on the board that piece can go, when player hits command, like spacebar, it will trigger 

@@ -433,26 +433,31 @@ def choose_piece():
     for k,v in Total_Up.items():
         if v == position:
             index.append(k)
-           
+    Trigger = 0        
+    
     for k,v in Red.items():
         if k == index[0]:
             coords = tuple([v[0], v[1]])
             possible_spots = find_piece_movement((coords))
+            Trigger = 1
                 
     for k,v in Black.items():
         if k == index[0]:
             coords = tuple([v[0], v[1]])
             possible_spots = find_piece_movement((coords))
+            Trigger = 1 
     positions = []
-    for k,v in Total_Up.items():
-        if k in possible_spots[0] or k in possible_spots[1].keys():
-            positions.append(v)
-            #draw some kind of small blue circle at the possible values
-            
-            draw_circle(v[0], v[1]-20, 'blue')
-    time.sleep(2)
-    for x in positions:
-        draw_circle(x[0], x[1]-20, 'white')               
+    if Trigger ==1:
+
+        for k,v in Total_Up.items():
+            if k in possible_spots[0] or k in possible_spots[1].keys():
+                positions.append(v)
+                #draw some kind of small blue circle at the possible values
+                
+                draw_circle(v[0], v[1]-20, 'blue')
+        time.sleep(2)
+        for x in positions:
+            draw_circle(x[0], x[1]-20, 'white')               
                
           
             
@@ -464,14 +469,7 @@ turtle.onkey(move_up, "Up")
 turtle.onkey(move_down, "Down")
 turtle.onkey(choose_piece, "space")    
 
-#TODO create function that will light up board, based on player movement, for a particular piece, as to 
-#where on the board that piece can go, when player hits command, like spacebar, it will trigger 
-#Find_piece_movement of that coordinate in the "fake coordinate dictionary", 
-#it will find the piece movement based on coordinate in the real dictionary, 
-# and all the potential movement spots will light up, or be drawn somehow, perhaps small blue circles,
-# from the center of the positions in the "fake dictionary" coordinate locations,
-#then, player will either click again on the original checker, or will click on one of the new spots
-#Once we have this, we can proceed
+#TODO Once piece moves, we need to change it's key, redraw it, etc
 
 
 

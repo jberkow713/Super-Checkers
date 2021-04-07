@@ -359,6 +359,68 @@ def find_piece_movement(Coordinate):
 
 print(find_piece_movement((-350.0, -300.00)))
 
+#Movement for Player
+#speed is used for how far player moves with keystroke
+speed = 100
+
+player = turtle.Turtle()
+player.color("blue")
+player.shape("triangle")
+player.penup()
+player.speed(0)
+Starting_pos_x = -50
+Starting_pos_y = 50
+player.setposition(Starting_pos_x , Starting_pos_y )
+player.setheading(90)
+
+def move_left():
+
+                    
+    x = player.xcor()
+    x -= speed      
+    
+    if x < -350:
+        x = -350
+    
+    player.setx(x)
+    player.setpos(x, player.ycor())
+    
+                
+def move_right():
+    x = player.xcor()
+    x += speed
+    if x > 350 :
+        x = 350
+    player.setx(x)
+    player.setpos(x, player.ycor())
+    
+
+def move_up():
+    y = player.ycor()
+    y += speed
+    if y >  350:
+        y = 350
+    player.sety(y)
+    player.setpos(player.xcor(), y)
+    
+def move_down():
+    y = player.ycor()
+    y -= speed
+    if y < -350:
+        y = -350
+    player.sety(y)
+    player.setpos(player.xcor(), y)
+
+turtle.listen()
+turtle.onkey(move_left, "Left") 
+turtle.onkey(move_right, "Right")
+turtle.onkey(move_up, "Up") 
+turtle.onkey(move_down, "Down")    
+
+
+
+
+
 #player will click on coordinate, or computer will move to random coordinate,
 #The coordinate will trigger find_piece_movement
 # 2 lists will be returned, a list of non jumpable moves, and a list of jumpable moves, all based on the index

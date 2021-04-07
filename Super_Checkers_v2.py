@@ -417,13 +417,17 @@ turtle.onkey(move_right, "Right")
 turtle.onkey(move_up, "Up") 
 turtle.onkey(move_down, "Down")    
 
+#TODO create function that will light up board, based on player movement, for a particular piece, as to 
+#where on the board that piece can go, when player hits command, like spacebar, it will trigger 
+#Find_piece_movement of that coordinate in the "fake coordinate dictionary", 
+#it will find the piece movement based on coordinate in the real dictionary, 
+# and all the potential movement spots will light up, or be drawn somehow, perhaps small blue circles,
+# from the center of the positions in the "fake dictionary" coordinate locations,
+#then, player will either click again on the original checker, or will click on one of the new spots
+#Once we have this, we can proceed
 
 
 
-
-#player will click on coordinate, or computer will move to random coordinate,
-#The coordinate will trigger find_piece_movement
-# 2 lists will be returned, a list of non jumpable moves, and a list of jumpable moves, all based on the index
 
 # So we access Total_Up dictionary, which gives the coordinate in the middle of the possible index, and we need to 
 # draw some kind of small circle , showing user that these are the spots he can go to

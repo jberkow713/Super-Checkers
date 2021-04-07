@@ -1,4 +1,5 @@
 import turtle
+import time
 #Create Board
  
 
@@ -391,7 +392,7 @@ def move_left():
 def move_right():
     x = player.xcor()
     x += speed
-    if x > 350 :
+    if x > 350:
         x = 350
     player.setx(x)
     player.setpos(x, player.ycor())
@@ -412,27 +413,48 @@ def move_down():
         y = -350
     player.sety(y)
     player.setpos(player.xcor(), y)
-    
+
+
+def draw_circle(x,y,color):
+    pen = turtle.Turtle()
+    pen.up()
+    pen.setpos(x,y)        
+    pen.speed(100)
+    pen.color(color)
+    pen.down()
+    pen.begin_fill()
+    pen.circle(20)
+    pen.end_fill()
+
 def choose_piece():
+    #Lights up board with possible spots to move to
     position = player.pos()
     index = []
     for k,v in Total_Up.items():
         if v == position:
             index.append(k)
-    print(index[0])        
+           
     for k,v in Red.items():
         if k == index[0]:
             coords = tuple([v[0], v[1]])
-            print(coords)
             possible_spots = find_piece_movement((coords))
-            print(possible_spots)
-            
+                
     for k,v in Black.items():
         if k == index[0]:
             coords = tuple([v[0], v[1]])
-            print(coords)
             possible_spots = find_piece_movement((coords))
-            print(possible_spots)
+    positions = []
+    for k,v in Total_Up.items():
+        if k in possible_spots[0] or k in possible_spots[1].keys():
+            positions.append(v)
+            #draw some kind of small blue circle at the possible values
+            
+            draw_circle(v[0], v[1]-20, 'blue')
+    time.sleep(2)
+    for x in positions:
+        draw_circle(x[0], x[1]-20, 'white')               
+               
+          
             
 
 turtle.listen()

@@ -425,6 +425,16 @@ def draw_circle(x,y,color):
     pen.begin_fill()
     pen.circle(20)
     pen.end_fill()
+def draw_circle_full(x,y,color):
+    pen = turtle.Turtle()
+    pen.up()
+    pen.setpos(x,y)        
+    pen.speed(100)
+    pen.color(color)
+    pen.down()
+    pen.begin_fill()
+    pen.circle(49)
+    pen.end_fill()
 
 def choose_piece():
     #Lights up board with possible spots to move to
@@ -447,18 +457,99 @@ def choose_piece():
             possible_spots = find_piece_movement((coords))
             Trigger = 1 
     positions = []
+    keys_to_move_to = []
     if Trigger ==1:
 
         for k,v in Total_Up.items():
             if k in possible_spots[0] or k in possible_spots[1].keys():
+                keys_to_move_to.append(k)
                 positions.append(v)
                 #draw some kind of small blue circle at the possible values
                 
                 draw_circle(v[0], v[1]-20, 'blue')
+                
         time.sleep(2)
         for x in positions:
             draw_circle(x[0], x[1]-20, 'white')               
-               
+
+    
+    
+    def move_to_spot():
+        last_index = index[0]
+        
+        for k,v in Red.items():
+            if last_index == k:
+                drawing_color = 'red'
+        for k,v in Black.items():
+            if last_index ==k:
+                drawing_color = 'black'
+
+        possible_locations = keys_to_move_to
+        
+        Locations = []
+        for k,v in Total_Up.items():
+            for x in possible_locations:
+                if x == k:
+                    Locations.append(v)
+        
+        
+        if player.pos() in Locations:
+            Moved_to_Square = player.pos()
+            # print(last_index)
+            # print(Moved_to_Square)
+            for k,v in Total_Up.items():
+                if k == last_index:
+                    To_be_erased = k
+            for k,v in Total.items():
+                if k == To_be_erased:
+                    Erased_Coordinate = v    
+            
+            for k,v in Total_Up.items():
+                if v == Moved_to_Square:
+                    Moved_to_key = k
+            for k,v in Total.items():
+                if k == Moved_to_key:
+                    Drawing_Coordinate = v
+            # def draw_circle_full(x,y,color):
+            #     pen = turtle.Turtle()
+            #     pen.up()
+            #     pen.setpos(x,y)        
+            #     pen.speed(100)
+            #     pen.color(color)
+            #     pen.down()
+            #     pen.begin_fill()
+            #     pen.circle(49)
+            #     pen.end_fill()
+            draw_circle_full(Erased_Coordinate[0], Erased_Coordinate[1], 'white')
+            draw_circle_full(Drawing_Coordinate[0], Drawing_Coordinate[1], drawing_color)
+            if drawing_color == 'black':
+                del Black[last_index]
+                Black[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'normal'])
+                print(Black) 
+            if drawing_color == 'red':
+                del Red[last_index]
+                Red[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'normal'])
+            # print(Erased_Coordinate)
+            # print(Drawing_Coordinate)
+            # print(drawing_color)
+            # print(last_index)
+            # print(Moved_to_key)
+
+            #Drawing Coordinate shows where to draw new circle from                 
+
+
+
+                    
+
+    turtle.onkey(move_to_spot, 'Return')
+
+
+    
+    
+
+
+
+
           
             
 
@@ -467,18 +558,11 @@ turtle.onkey(move_left, "Left")
 turtle.onkey(move_right, "Right")
 turtle.onkey(move_up, "Up") 
 turtle.onkey(move_down, "Down")
-turtle.onkey(choose_piece, "space")    
+turtle.onkey(choose_piece, 'space')
+   
 
 #TODO Once piece moves, we need to change it's key, redraw it, etc
 
-
-
-
-# So we access Total_Up dictionary, which gives the coordinate in the middle of the possible index, and we need to 
-# draw some kind of small circle , showing user that these are the spots he can go to
-# Once the user clicks on the small circle he chooses to move to, it will refer back to the Total dictionary, 
-#Move to that coordinate, and the piece will be redrawn based on these coordinates, the original piece will be erased from the board
-#meaning there has to be a function to basically erase the old index, just fill in the square in between the lines with white
 
 #Once the piece moves to the new coordinate, the index of the piece in that specific color dictionary, needs to be
 #changed to the new index, and if possible, the type of piece needs to be altered as well. If the type of piece changes, 

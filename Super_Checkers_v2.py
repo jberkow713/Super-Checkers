@@ -437,7 +437,9 @@ def draw_circle_full(x,y,color):
     pen.end_fill()
 
 def choose_piece():
-    #Lights up board with possible spots to move to
+    '''
+    Shows player where they can move to, for a given piece
+    '''
     position = player.pos()
     index = []
     for k,v in Total_Up.items():
@@ -475,6 +477,10 @@ def choose_piece():
     
     
     def move_to_spot():
+        '''
+        Will allow player to move, if spot moving to is one of the previous spots designated through 
+        Choose_Piece function, will update dictionary as well
+        '''
         last_index = index[0]
         
         for k,v in Red.items():
@@ -495,8 +501,7 @@ def choose_piece():
         
         if player.pos() in Locations:
             Moved_to_Square = player.pos()
-            # print(last_index)
-            # print(Moved_to_Square)
+            
             for k,v in Total_Up.items():
                 if k == last_index:
                     To_be_erased = k
@@ -510,18 +515,10 @@ def choose_piece():
             for k,v in Total.items():
                 if k == Moved_to_key:
                     Drawing_Coordinate = v
-            # def draw_circle_full(x,y,color):
-            #     pen = turtle.Turtle()
-            #     pen.up()
-            #     pen.setpos(x,y)        
-            #     pen.speed(100)
-            #     pen.color(color)
-            #     pen.down()
-            #     pen.begin_fill()
-            #     pen.circle(49)
-            #     pen.end_fill()
+            
             draw_circle_full(Erased_Coordinate[0], Erased_Coordinate[1], 'white')
             draw_circle_full(Drawing_Coordinate[0], Drawing_Coordinate[1], drawing_color)
+            
             if drawing_color == 'black':
                 del Black[last_index]
                 Black[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'normal'])
@@ -529,11 +526,7 @@ def choose_piece():
             if drawing_color == 'red':
                 del Red[last_index]
                 Red[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'normal'])
-            # print(Erased_Coordinate)
-            # print(Drawing_Coordinate)
-            # print(drawing_color)
-            # print(last_index)
-            # print(Moved_to_key)
+            
 
             #Drawing Coordinate shows where to draw new circle from                 
 

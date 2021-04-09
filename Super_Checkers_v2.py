@@ -332,10 +332,8 @@ def find_piece_movement(Coordinate):
         if Color=='black':
             #Check to see if spots it can move to are red, for jumping
             Possible_Jumps = [x for x in new_moves if x in Red.keys()]
-            for x in new_moves:
-                if x in Possible_Jumps:
-                    new_moves.remove(x)
-            
+            #Resetting new moves to remove spots on red pieces
+            new_moves = [x for x in new_moves if x not in Possible_Jumps]
             
     if Color=='red':
         new_moves = [x for x in Moves if x not in Red.keys()]
@@ -343,15 +341,13 @@ def find_piece_movement(Coordinate):
         if Color=='red':
             #Check to see if spots it can move to are red, for jumping
             Possible_Jumps = [x for x in new_moves if x in Black.keys()]
-            for x in new_moves:
-                if x in Possible_Jumps:
-                    new_moves.remove(x)
+            #Resetting new moves to remove spots on black pieces
+            new_moves = [x for x in new_moves if x not in Possible_Jumps]
             
-    #Jumps represent spots of opposite color in the way, only way they can actually be jumps, is if the spot behind them
-    # in the direction from the piece, is empty, meaning it is in the Possible_Spots Dictionary
+    
     Jump_Options = []
     for piece in Possible_Jumps:
-        #For most pieces this will work, but not if the jump is moving off the edge of the board
+        
         
         if piece % squares_per_row != 0 and piece % squares_per_row != (squares_per_row-1) \
             and piece < (squares_per_row  * (squares_per_row-1)) and piece> (squares_per_row-1):

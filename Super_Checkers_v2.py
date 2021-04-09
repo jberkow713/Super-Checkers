@@ -556,17 +556,12 @@ turtle.onkey(move_down, "Down")
 turtle.onkey(choose_piece, 'space')
    
 
-#TODO Once piece moves, we need to change it's key, redraw it, etc
+#TODO changing piece type when jump, and create function to continue turn once piece jumps, with the new type of piece
+# once piece jumps, also need to change it's color, from red to orange, from black to Green, as it is now a king
+# Finally, if player chooses to jump opponent's piece, we need to also clear the opponent's piece from the board, 
+# delete it from its current dictionary
 
-
-#Once the piece moves to the new coordinate, the index of the piece in that specific color dictionary, needs to be
-#changed to the new index, and if possible, the type of piece needs to be altered as well. If the type of piece changes, 
-# The color of the piece needs to be changed, to say Orange for Red's pieces, and Blue for Black's pieces, indicating that piece
-# is now a king
-
-# If player chooses to jump opponent's piece, we need to also clear the opponent's piece from the board, change it's value in its
-#own dictionary, add it to the "knocked out" list
-
+#Once red or black has an empty dictionary, (dictionary length ==0 for red or black), game is over
 
 
 

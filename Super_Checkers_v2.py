@@ -332,6 +332,9 @@ def find_piece_movement(Coordinate):
         if Color=='black':
             #Check to see if spots it can move to are red, for jumping
             Possible_Jumps = [x for x in new_moves if x in Red.keys()]
+            for x in new_moves:
+                if x in Possible_Jumps:
+                    new_moves.remove(x)
             
             
     if Color=='red':
@@ -340,6 +343,9 @@ def find_piece_movement(Coordinate):
         if Color=='red':
             #Check to see if spots it can move to are red, for jumping
             Possible_Jumps = [x for x in new_moves if x in Black.keys()]
+            for x in new_moves:
+                if x in Possible_Jumps:
+                    new_moves.remove(x)
             
     #Jumps represent spots of opposite color in the way, only way they can actually be jumps, is if the spot behind them
     # in the direction from the piece, is empty, meaning it is in the Possible_Spots Dictionary

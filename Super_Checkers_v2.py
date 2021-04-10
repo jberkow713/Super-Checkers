@@ -472,7 +472,7 @@ def choose_piece():
                 
                 draw_circle(v[0], v[1]-20, 'blue')
                 
-        time.sleep(2)
+        time.sleep(1)
         for x in positions:
             draw_circle(x[0], x[1]-20, 'white')               
 
@@ -483,6 +483,8 @@ def choose_piece():
         Will allow player to move, if spot moving to is one of the previous spots designated through 
         Choose_Piece function, will update dictionary as well
         '''
+              
+                
         last_index = index[0]
         
         for k,v in Red.items():
@@ -531,6 +533,7 @@ def choose_piece():
             draw_circle_full(Erased_Coordinate[0], Erased_Coordinate[1], 'white')
             draw_circle_full(Drawing_Coordinate[0], Drawing_Coordinate[1], drawing_color)
             
+            #Now updating dictionaries based on movement
             if drawing_color == 'black':
                 del Black[last_index]
                 Black[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'normal'])
@@ -543,6 +546,7 @@ def choose_piece():
             if drawing_color == 'orange':
                 del Red[last_index]
                 Red[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'King'])    
+            
 
         if player.pos() in Jump_Locations:
             #if player is moving to a jumping location
@@ -561,8 +565,7 @@ def choose_piece():
             for k,v in Total.items():
                 if k == Moved_to_key:
                     Drawing_Coordinate = v
-            
-            
+               
             if drawing_color == 'black' or drawing_color == 'green':
                 for k,v in possible_spots[1].items():
                     if Moved_to_key == k:
@@ -574,20 +577,11 @@ def choose_piece():
                 draw_circle_full(Erased_Coordinate[0], Erased_Coordinate[1], 'white')
                 #This erases the checker that has been jumped
                 draw_circle_full(Erased_Jump_Coords[0], Erased_Jump_Coords[1], 'white')
-
-
-
-                
-                
+               
                 del Red[to_be_deleted]
                 del Black[last_index]
                 Black[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'King'])
-                print(Black, Red)
-                
-                
-
-                    
-                
+           
             if drawing_color == 'red' or drawing_color == 'orange':
                 for k,v in possible_spots[1].items():
                     if Moved_to_key == k:
@@ -600,37 +594,18 @@ def choose_piece():
                 #This erases the checker that has been jumped
                 draw_circle_full(Erased_Jump_Coords[0], Erased_Jump_Coords[1], 'white')
 
-
                 del Black[to_be_deleted]
                 del Red[last_index]
                 Red[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'King'])
-                print(Red, Black)
-                
+                                
             
             if drawing_color == 'red':
                 jumped_color = 'orange'
             elif drawing_color == 'black':
                 jumped_color = 'green'    
-            draw_circle_full(Drawing_Coordinate[0], Drawing_Coordinate[1], jumped_color)           
-
-
-            #Drawing Coordinate shows where to draw new circle from                 
-
-
-
-                    
-
+            draw_circle_full(Drawing_Coordinate[0], Drawing_Coordinate[1], jumped_color)
+            #Need to force them once they have jumped, to move same piece
     turtle.onkey(move_to_spot, 'Return')
-
-
-    
-    
-
-
-
-
-          
-            
 
 turtle.listen()
 turtle.onkey(move_left, "Left") 
@@ -640,12 +615,10 @@ turtle.onkey(move_down, "Down")
 turtle.onkey(choose_piece, 'space')
    
 
-#TODO changing piece type when jump, and create function to continue turn once piece jumps, with the new type of piece
-# once piece jumps, also need to change it's color, from red to orange, from black to Green, as it is now a king
-# Finally, if player chooses to jump opponent's piece, we need to also clear the opponent's piece from the board, 
-# delete it from its current dictionary
-
-#Once red or black has an empty dictionary, (dictionary length ==0 for red or black), game is over
+#TODO Create the computer moves, create the human/computer interaction...
+#Need to write the function for the computer, it's obviously not going to use human methods for movement
+# When computer or human makes a move that is not a jump, then switch to opposing player, 
+# When computer or human makes a move that is a jump, force computer or human to move again with the same piece
 
 
 

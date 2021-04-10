@@ -487,10 +487,16 @@ def choose_piece():
         
         for k,v in Red.items():
             if last_index == k:
-                drawing_color = 'red'
+                if v[2]=='normal':
+                    drawing_color = 'red'
+                elif v[2] == 'King':
+                    drawing_color = 'orange'    
         for k,v in Black.items():
             if last_index ==k:
-                drawing_color = 'black'
+                if v[2]=='normal':
+                    drawing_color = 'black'
+                elif v[2] == 'King':
+                    drawing_color = 'green'   
 
         possible_locations = keys_to_move_to
         
@@ -528,10 +534,15 @@ def choose_piece():
             if drawing_color == 'black':
                 del Black[last_index]
                 Black[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'normal'])
-                print(Black) 
+            if drawing_color == 'green':
+                del Black[last_index]
+                Black[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'King'])     
             if drawing_color == 'red':
                 del Red[last_index]
                 Red[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'normal'])
+            if drawing_color == 'orange':
+                del Red[last_index]
+                Red[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'King'])    
 
         if player.pos() in Jump_Locations:
             #if player is moving to a jumping location
@@ -552,13 +563,15 @@ def choose_piece():
                     Drawing_Coordinate = v
             
             
-            if drawing_color == 'black':
+            if drawing_color == 'black' or drawing_color == 'green':
                 for k,v in possible_spots[1].items():
                     if Moved_to_key == k:
                         to_be_deleted = v
                 for k,v in Total.items():
                     if k == to_be_deleted:
                         Erased_Jump_Coords = v
+                #This erases the moving checker's previous spot
+                draw_circle_full(Erased_Coordinate[0], Erased_Coordinate[1], 'white')
                 #This erases the checker that has been jumped
                 draw_circle_full(Erased_Jump_Coords[0], Erased_Jump_Coords[1], 'white')
 
@@ -568,31 +581,32 @@ def choose_piece():
                 
                 del Red[to_be_deleted]
                 del Black[last_index]
-                Black[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'king'])
+                Black[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'King'])
                 print(Black, Red)
                 
                 
 
                     
                 
-            if drawing_color == 'red':
+            if drawing_color == 'red' or drawing_color == 'orange':
                 for k,v in possible_spots[1].items():
                     if Moved_to_key == k:
                         to_be_deleted = v
                 for k,v in Total.items():
                     if k == to_be_deleted:
                         Erased_Jump_Coords = v
+                #This erases the moving checker's previous spot
+                draw_circle_full(Erased_Coordinate[0], Erased_Coordinate[1], 'white')
                 #This erases the checker that has been jumped
                 draw_circle_full(Erased_Jump_Coords[0], Erased_Jump_Coords[1], 'white')
 
 
                 del Black[to_be_deleted]
                 del Red[last_index]
-                Red[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'king'])
+                Red[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'King'])
                 print(Red, Black)
                 
-
-            draw_circle_full(Erased_Coordinate[0], Erased_Coordinate[1], 'white')
+            
             if drawing_color == 'red':
                 jumped_color = 'orange'
             elif drawing_color == 'black':

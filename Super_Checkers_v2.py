@@ -494,14 +494,18 @@ def choose_piece():
 
         possible_locations = keys_to_move_to
         
-        Locations = []
+        Non_Jump_Locations = []
+        Jump_Locations = []
         for k,v in Total_Up.items():
             for x in possible_locations:
-                if x == k:
-                    Locations.append(v)
+                if x == k and x in possible_spots[0]:
+                    Non_Jump_Locations.append(v)
+                elif x == k and x in possible_spots[1].keys():
+                    Jump_Locations.append(v)    
         
         
-        if player.pos() in Locations:
+        if player.pos() in Non_Jump_Locations:
+            #if the spot the player moves to is in the possible spots within non-jump locations
             Moved_to_Square = player.pos()
             
             for k,v in Total_Up.items():
@@ -528,7 +532,73 @@ def choose_piece():
             if drawing_color == 'red':
                 del Red[last_index]
                 Red[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'normal'])
+
+        if player.pos() in Jump_Locations:
+            #if player is moving to a jumping location
+            Moved_to_Square = player.pos()
+
+            for k,v in Total_Up.items():
+                if k == last_index:
+                    To_be_erased = k
+            for k,v in Total.items():
+                if k == To_be_erased:
+                    Erased_Coordinate = v    
             
+            for k,v in Total_Up.items():
+                if v == Moved_to_Square:
+                    Moved_to_key = k
+            for k,v in Total.items():
+                if k == Moved_to_key:
+                    Drawing_Coordinate = v
+            
+            
+            if drawing_color == 'black':
+                for k,v in possible_spots[1].items():
+                    if Moved_to_key == k:
+                        to_be_deleted = v
+                for k,v in Total.items():
+                    if k == to_be_deleted:
+                        Erased_Jump_Coords = v
+                #This erases the checker that has been jumped
+                draw_circle_full(Erased_Jump_Coords[0], Erased_Jump_Coords[1], 'white')
+
+
+
+                
+                
+                del Red[to_be_deleted]
+                del Black[last_index]
+                Black[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'king'])
+                print(Black, Red)
+                
+                
+
+                    
+                
+            if drawing_color == 'red':
+                for k,v in possible_spots[1].items():
+                    if Moved_to_key == k:
+                        to_be_deleted = v
+                for k,v in Total.items():
+                    if k == to_be_deleted:
+                        Erased_Jump_Coords = v
+                #This erases the checker that has been jumped
+                draw_circle_full(Erased_Jump_Coords[0], Erased_Jump_Coords[1], 'white')
+
+
+                del Black[to_be_deleted]
+                del Red[last_index]
+                Red[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'king'])
+                print(Red, Black)
+                
+
+            draw_circle_full(Erased_Coordinate[0], Erased_Coordinate[1], 'white')
+            if drawing_color == 'red':
+                jumped_color = 'orange'
+            elif drawing_color == 'black':
+                jumped_color = 'green'    
+            draw_circle_full(Drawing_Coordinate[0], Drawing_Coordinate[1], jumped_color)           
+
 
             #Drawing Coordinate shows where to draw new circle from                 
 

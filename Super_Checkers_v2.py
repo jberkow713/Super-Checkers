@@ -136,11 +136,8 @@ A = draw_board(800, 8)
 Black = A[0]
 Red = A[1]
 Total = A[2]
-#Total is list of actual coordinates of all indices
 Total_Up = A[3]
-#Total_Up is list of coordinates to be highlighted for user, in middle of squares, for all indices
-# print(Total)
-# print(Total_Up)
+
 
 def find_open_spots():
     '''
@@ -425,8 +422,9 @@ def draw_circle(x,y,color):
     pen.color(color)
     pen.down()
     pen.begin_fill()
-    pen.circle(20)
+    pen.circle(12)
     pen.end_fill()
+    pen.up()
 def draw_circle_full(x,y,color):
     pen = turtle.Turtle()
     pen.up()
@@ -443,20 +441,20 @@ def choose_piece():
     Shows player where they can move to, for a given piece
     '''
     position = player.pos()
-    index = []
+    
     for k,v in Total_Up.items():
         if v == position:
-            index.append(k)
+            index=k
     Trigger = 0        
     
     for k,v in Red.items():
-        if k == index[0]:
+        if k == index:
             coords = tuple([v[0], v[1]])
             possible_spots = find_piece_movement((coords))
             Trigger = 1
                 
     for k,v in Black.items():
-        if k == index[0]:
+        if k == index:
             coords = tuple([v[0], v[1]])
             possible_spots = find_piece_movement((coords))
             Trigger = 1 
@@ -485,27 +483,24 @@ def choose_piece():
         '''
               
                 
-        last_index = index[0]
-        
+               
         for k,v in Red.items():
-            if last_index == k:
+            if k == index:
                 if v[2]=='normal':
                     drawing_color = 'red'
                 elif v[2] == 'King':
                     drawing_color = 'orange'    
         for k,v in Black.items():
-            if last_index ==k:
+            if k == index:
                 if v[2]=='normal':
                     drawing_color = 'black'
                 elif v[2] == 'King':
                     drawing_color = 'green'   
-
-        possible_locations = keys_to_move_to
         
         Non_Jump_Locations = []
         Jump_Locations = []
         for k,v in Total_Up.items():
-            for x in possible_locations:
+            for x in keys_to_move_to:
                 if x == k and x in possible_spots[0]:
                     Non_Jump_Locations.append(v)
                 elif x == k and x in possible_spots[1].keys():
@@ -517,7 +512,7 @@ def choose_piece():
             Moved_to_Square = player.pos()
             
             for k,v in Total_Up.items():
-                if k == last_index:
+                if k == index:
                     To_be_erased = k
             for k,v in Total.items():
                 if k == To_be_erased:
@@ -535,16 +530,16 @@ def choose_piece():
             
             #Now updating dictionaries based on movement
             if drawing_color == 'black':
-                del Black[last_index]
+                del Black[index]
                 Black[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'normal'])
             if drawing_color == 'green':
-                del Black[last_index]
+                del Black[index]
                 Black[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'King'])     
             if drawing_color == 'red':
-                del Red[last_index]
+                del Red[index]
                 Red[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'normal'])
             if drawing_color == 'orange':
-                del Red[last_index]
+                del Red[index]
                 Red[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'King'])    
             
 
@@ -553,7 +548,7 @@ def choose_piece():
             Moved_to_Square = player.pos()
 
             for k,v in Total_Up.items():
-                if k == last_index:
+                if k == index:
                     To_be_erased = k
             for k,v in Total.items():
                 if k == To_be_erased:
@@ -579,7 +574,7 @@ def choose_piece():
                 draw_circle_full(Erased_Jump_Coords[0], Erased_Jump_Coords[1], 'white')
                
                 del Red[to_be_deleted]
-                del Black[last_index]
+                del Black[index]
                 Black[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'King'])
            
             if drawing_color == 'red' or drawing_color == 'orange':
@@ -595,7 +590,7 @@ def choose_piece():
                 draw_circle_full(Erased_Jump_Coords[0], Erased_Jump_Coords[1], 'white')
 
                 del Black[to_be_deleted]
-                del Red[last_index]
+                del Red[index]
                 Red[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'King'])
                                 
             

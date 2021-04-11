@@ -622,11 +622,9 @@ turtle.onkey(choose_piece, 'space')
 def computer_moves(color):
     if color == 'red':
         Pieces_to_check = Red
-        Opponent_Dict = Black
         Jumped_Color = 'orange' 
     if color == 'black':
         Pieces_to_check = Black
-        Opponent_Dict = Red
         Jumped_Color = 'green'
     keys = []
     random_keys = []

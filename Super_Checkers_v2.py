@@ -622,10 +622,12 @@ turtle.onkey(choose_piece, 'space')
 def computer_moves(color):
     if color == 'red':
         Pieces_to_check = Red
-        Jumped_Color = 'orange' 
+        Jumped_Color = 'orange'
+        Kinged_Color = 'orange' 
     if color == 'black':
         Pieces_to_check = Black
         Jumped_Color = 'green'
+        Kinged_Color = 'green' 
     keys = []
     random_keys = []
     moves = []
@@ -648,6 +650,17 @@ def computer_moves(color):
     length = len(random_keys)
     random_key = random.randint(0,length)
     key = random_keys[random_key]
+    
+    #This checks to see if the current piece being moved is a King or not, 
+    #This is needed in case a piece that is already a king, is making a normal move, and
+    #Then it must be drawn retaining it's new color
+    if Pieces_to_check[key][2] == 'King':
+        King_Color = True
+    if Pieces_to_check[key][2] == 'normal':
+        King_Color = False
+
+            
+
         
     Random_Moves = movement_dictionary[key]
     #([45, 44, 46], {})
@@ -708,7 +721,12 @@ def computer_moves(color):
             if k == Key_to_move_to:
                 new_spot = v     
         draw_circle_full(move_from_spot[0], move_from_spot[1], 'white')
-        draw_circle_full(new_spot[0], new_spot[1], color)
+        #Checking to see if moved piece is a king, before deciding on the color to draw
+        if King_Color == False:
+            draw_circle_full(new_spot[0], new_spot[1], color)
+        elif King_Color == True:
+            draw_circle_full(new_spot[0], new_spot[1], Kinged_Color)
+
 
         if color == 'black':
 

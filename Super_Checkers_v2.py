@@ -437,28 +437,45 @@ def draw_circle_full(x,y,color):
     pen.circle(49)
     pen.end_fill()
 
+
+
+Player_Color = 'black' 
+#Player_Red is a global variable, to be used to condition whether a player can move as Red or Black within the function
+#For whatever reason, this is the only way to get this to work within Turtle functions
+
+
+
 def choose_piece():
     '''
-    Shows player where they can move to, for a given piece
+    Shows player where they can move to, for a given piece and given color, given the global variable
     '''
     position = player.pos()
-    
+       
+
     for k,v in Total_Up.items():
         if v == position:
             index=k
+            
     Trigger = 0        
-    
-    for k,v in Red.items():
-        if k == index:
-            coords = tuple([v[0], v[1]])
-            possible_spots = find_piece_movement((coords))
-            Trigger = 1
-                
-    for k,v in Black.items():
-        if k == index:
-            coords = tuple([v[0], v[1]])
-            possible_spots = find_piece_movement((coords))
-            Trigger = 1 
+
+    if Player_Color =='red':
+
+
+        for k,v in Red.items():
+            if k == index:
+                coords = tuple([v[0], v[1]])
+                possible_spots = find_piece_movement((coords))
+                Trigger = 1
+      
+    if Player_Color == 'black' :
+
+
+        for k,v in Black.items():
+            if k == index:
+                coords = tuple([v[0], v[1]])
+                possible_spots = find_piece_movement((coords))
+                Trigger = 1 
+            
     positions = []
     keys_to_move_to = []
     if Trigger ==1:
@@ -639,7 +656,8 @@ def computer_moves(color):
             moves.append(movement)
             keys.append(k)
             random_keys.append(k)
-
+    print(moves)
+    
     movement_dictionary = dict(zip(keys, moves))
     #in jump moves, we have dictionary of key value pairs
     #([18, 20], {11: 19})
@@ -648,8 +666,9 @@ def computer_moves(color):
 
     #Choose random key from possible moves
     length = len(random_keys)
-    random_key = random.randint(0,length)
+    random_key = random.randint(0,length-1)
     key = random_keys[random_key]
+    print(key)
     
     #This checks to see if the current piece being moved is a King or not, 
     #This is needed in case a piece that is already a king, is making a normal move, and
@@ -671,9 +690,10 @@ def computer_moves(color):
         moves.append(k)
     #Choose index to move to 
     length = len(moves)
-    random_key = random.randint(0,length)
-    Key_to_move_to = moves[random_key]
+    random_key = random.randint(0,length-1)
     
+    Key_to_move_to = moves[random_key]
+    print(Key_to_move_to)
     
     
     Jump = 0

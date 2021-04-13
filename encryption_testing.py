@@ -72,3 +72,8 @@ def encrypt_v2(string):
 
 
 print(encrypt_v2('hello world'))
+
+#TODO don't want the length of encryption to be divisible by any number, meaning
+# length needs to be prime, so that people can not detect the amount of characters in the stuff
+#so, find a way to add 0s, changing prime numbers randomly, and adding 0s or 1s, based on random
+#probability, in between the individual or_addition outcomes

@@ -629,13 +629,6 @@ turtle.onkey(move_down, "Down")
 turtle.onkey(choose_piece, 'space')
    
 
-#TODO Create the computer moves, create the human/computer interaction...
-#Need to write the function for the computer, it's obviously not going to use human methods for movement
-# When computer or human makes a move that is not a jump, then switch to opposing player, 
-# When computer or human makes a move that is a jump, force computer or human to move again with the same piece
-
-#Want to allow computer to see all possible choices for all pieces that can move
-#Going to take in a red or black color
 def computer_moves(color):
     if color == 'red':
         Pieces_to_check = Red
@@ -764,7 +757,13 @@ def computer_moves(color):
     
 
 computer_moves('black')
+#TODO Create the computer moves, create the human/computer interaction...
 
+# When computer or human makes a move that is not a jump, then switch to opposing player, 
+
+# When computer or human makes a move that is a jump, force computer or human to move again with the same piece
+
+# Time to create game loop
 
 
 turtle.done()

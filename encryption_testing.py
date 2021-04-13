@@ -64,10 +64,8 @@ def encrypt_v2(string):
 
   scrambled = scramble_word(string)
   scrambled_list = []
-  for x in scrambled:
-    y = or_addition(x)
-    scrambled_list.append(y)
- 
+  scrambled_list = [or_addition(x) for x in scrambled]
+   
   joined_list = ''.join(scrambled_list)  
   return joined_list
 

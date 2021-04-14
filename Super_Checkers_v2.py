@@ -344,17 +344,39 @@ def find_piece_movement(Coordinate):
             
     
     Jump_Options = []
-    for piece in Possible_Jumps:
+    if Index % squares_per_row != 0 and Index % squares_per_row != (squares_per_row-1):
+        for piece in Possible_Jumps:
         
-        
-        if piece % squares_per_row != 0 and piece % squares_per_row != (squares_per_row-1) \
-            and piece < (squares_per_row  * (squares_per_row-1)) and piece> (squares_per_row-1):
-        
-            Direction = piece - Index
-            Jump_to_index = piece+Direction
-            for k in Possible_Spots.keys():
-                if Jump_to_index == k:
-                    Jump_Options.append(Jump_to_index)
+                        
+            if piece % squares_per_row != 0 and piece % squares_per_row != (squares_per_row-1) \
+                and piece < (squares_per_row  * (squares_per_row-1)) and piece> (squares_per_row-1):
+            
+                Direction = piece - Index
+                Jump_to_index = piece+Direction
+                for k in Possible_Spots.keys():
+                    if Jump_to_index == k:
+                        Jump_Options.append(Jump_to_index)
+    if Index % squares_per_row == 0 or Index % squares_per_row == (squares_per_row-1):
+        if Index >=(squares_per_row)*(squares_per_row-1) or Index < squares_per_row:
+            for piece in Possible_Jumps:
+
+
+                Direction = piece - Index
+                Jump_to_index = piece+Direction
+                for k in Possible_Spots.keys():
+                    if Jump_to_index == k:
+                        Jump_Options.append(Jump_to_index)
+        elif Index < (squares_per_row  * (squares_per_row-1)) and Index > (squares_per_row-1):
+            for piece in Possible_Jumps:
+
+
+                if piece < (squares_per_row  * (squares_per_row-1)) and piece> (squares_per_row-1):
+
+                    Direction = piece - Index
+                    Jump_to_index = piece+Direction
+                    for k in Possible_Spots.keys():
+                        if Jump_to_index == k:
+                            Jump_Options.append(Jump_to_index)
 
     Jump_Dict = dict(zip(Jump_Options, Possible_Jumps ))
 
@@ -444,11 +466,18 @@ Player_Color = 'black'
 #For whatever reason, this is the only way to get this to work within Turtle functions
 
 
-
+INDEX = 99 
+Forced_Key = 100 
+Current_Piece = 101 
 def choose_piece():
     '''
     Shows player where they can move to, for a given piece and given color, given the global variable
     '''
+    print(INDEX)
+    print(Forced_Key)
+    print(Current_Piece)
+    print('-----------------') 
+
     position = player.pos()
        
 
@@ -459,23 +488,49 @@ def choose_piece():
     Trigger = 0        
 
     if Player_Color =='red':
+        if INDEX == Current_Piece:
+                
 
+            for k,v in Red.items():
+                          
 
-        for k,v in Red.items():
-            if k == index:
-                coords = tuple([v[0], v[1]])
-                possible_spots = find_piece_movement((coords))
-                Trigger = 1
+                    if k == index == Forced_Key:
+                        coords = tuple([v[0], v[1]])
+                        possible_spots = find_piece_movement((coords))
+                        Trigger = 1
+            
+        if INDEX != Current_Piece:    
+            for k,v in Red.items():
+                
+
+                    if k == index :
+                        coords = tuple([v[0], v[1]])
+                        possible_spots = find_piece_movement((coords))
+                        Trigger = 1
       
     if Player_Color == 'black' :
+        if INDEX == Current_Piece:
+                  
 
+            for k,v in Black.items():
+                
+                    
+                    if k == index == Forced_Key:
+                                    
+                        coords = tuple([v[0], v[1]])
+                        possible_spots = find_piece_movement((coords))
+                        Trigger = 1
 
-        for k,v in Black.items():
-            if k == index:
-                coords = tuple([v[0], v[1]])
-                possible_spots = find_piece_movement((coords))
-                Trigger = 1 
-            
+        
+        if INDEX != Current_Piece:   
+            for k,v in Black.items():
+                
+
+                    if k == index:
+                        coords = tuple([v[0], v[1]])
+                        possible_spots = find_piece_movement((coords))
+                        Trigger = 1
+           
     positions = []
     keys_to_move_to = []
     if Trigger ==1:
@@ -492,15 +547,13 @@ def choose_piece():
         for x in positions:
             draw_circle(x[0], x[1]-20, 'white')               
 
-    
-    
+        
     def move_to_spot():
         '''
         Will allow player to move, if spot moving to is one of the previous spots designated through 
         Choose_Piece function, will update dictionary as well
         '''
-
-              
+             
                 
                
         for k,v in Red.items():
@@ -561,6 +614,9 @@ def choose_piece():
                 del Red[index]
                 Red[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'King'])    
             
+            global Current_Piece
+            Current_Piece = Moved_to_key
+                            
 
         if player.pos() in Jump_Locations:
             #if player is moving to a jumping location
@@ -595,7 +651,18 @@ def choose_piece():
                 del Red[to_be_deleted]
                 del Black[index]
                 Black[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'King'])
-           
+                #Need to keep track of this Moved_to_key, because turn is not over after a jump, must move that key again
+                global INDEX
+                INDEX = index 
+
+                global Forced_Key
+                Forced_Key = Moved_to_key
+                
+                
+                
+                               
+
+          
             if drawing_color == 'red' or drawing_color == 'orange':
                 for k,v in possible_spots[1].items():
                     if Moved_to_key == k:
@@ -611,7 +678,9 @@ def choose_piece():
                 del Black[to_be_deleted]
                 del Red[index]
                 Red[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'King'])
-                                
+
+                
+
             
             if drawing_color == 'red':
                 jumped_color = 'orange'
@@ -753,10 +822,48 @@ def computer_moves(color):
             Red[Key_to_move_to] = tuple([new_spot[0], new_spot[1], 'normal'])
             print(Red)
     
+computer_moves('red')
 
+
+   
+# while len(Red)>0 and len(Black)>0:
+#     starting_color = random.randint(0,1)
     
+#     if starting_color == 0:
+#         Player_turn = False 
+#         Player_Color = 'black'
+#         starting_player = random.randint(0,1)
+#         if starting_player == 0:
+#             Player_turn = True
 
-computer_moves('black')
+#             while Player_turn == True:
+
+#                 #Need to figure out if dictionary changed, and figure out if there was a jump
+#                 #So if the black dictionary changes, 
+
+
+
+
+
+#             while Player_turn == False:
+#                 computer_moves('red')
+#                 #as long as the computer move was not a jump, we can switch back to the human player        
+#                 #in the case of a jump, we need to track the piece that jumped, track where the piece ended up
+#                 #and force that piece to move again, until it ends not in a jump
+#                 # then we switch back to human player
+        
+#     if starting_color == 1:
+#         Player_turn = False 
+#         Player_Color = 'red'
+#         starting_player = random.randint(0,1)
+#         if starting_player == 0:
+#             Player_turn = True
+
+
+
+
+
+
 #TODO Create the computer moves, create the human/computer interaction...
 
 # When computer or human makes a move that is not a jump, then switch to opposing player, 

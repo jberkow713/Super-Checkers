@@ -824,6 +824,12 @@ def computer_moves(color):
     
 computer_moves('red')
 
+#TODO When computer makes a move that is a jump, force computer to move again with same piece
+
+#TODO Create the computer moves, create the human/computer interaction...
+
+# When computer or human makes a move that is not a jump, then switch to opposing player, 
+
 
    
 # while len(Red)>0 and len(Black)>0:
@@ -868,7 +874,7 @@ computer_moves('red')
 
 # When computer or human makes a move that is not a jump, then switch to opposing player, 
 
-# When computer or human makes a move that is a jump, force computer or human to move again with the same piece
+# When computer makes a move that is a jump force computer to move again with the same piece
 
 # Time to create game loop
 

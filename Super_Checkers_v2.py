@@ -461,7 +461,7 @@ def draw_circle_full(x,y,color):
 
 
 
-Player_Color = 'black' 
+
 #Player_Red is a global variable, to be used to condition whether a player can move as Red or Black within the function
 #For whatever reason, this is the only way to get this to work within Turtle functions
 
@@ -472,12 +472,11 @@ Current_Piece = 101
 def choose_piece():
     '''
     Shows player where they can move to, for a given piece and given color, given the global variable
+    They then move using the move_to_spot function within
+    They are limited to move only the color which Player_Color is, and in the event of a jump, they must move
+    the jumped piece again until they make a non jumped move
     '''
-    print(INDEX)
-    print(Forced_Key)
-    print(Current_Piece)
-    print('-----------------') 
-
+    
     position = player.pos()
        
 
@@ -696,9 +695,12 @@ turtle.onkey(move_right, "Right")
 turtle.onkey(move_up, "Up") 
 turtle.onkey(move_down, "Down")
 turtle.onkey(choose_piece, 'space')
-   
+
 
 def computer_moves(color):
+
+       
+
     if color == 'red':
         Pieces_to_check = Red
         Jumped_Color = 'orange'
@@ -710,11 +712,15 @@ def computer_moves(color):
     keys = []
     random_keys = []
     moves = []
+
+          
+      
+
     for k,v in Pieces_to_check.items():
         a = tuple([v[0], v[1]])
         movement = find_piece_movement(a)
         if len(movement[0])>0 or len(movement[1])>0:
-                   
+                
             moves.append(movement)
             keys.append(k)
             random_keys.append(k)
@@ -770,22 +776,27 @@ def computer_moves(color):
     if Jump == 1:
         for k,v in Total.items():
             if k == key:
+                #Moving from this indexed spot
                 move_from_spot = v 
             if k == Jumped:
                 jumped_spot = v
             if k == Key_to_move_to:
                 new_spot = v 
         draw_circle_full(move_from_spot[0], move_from_spot[1], 'white')
+        #Delete indexed spot that you are moving from
         draw_circle_full(jumped_spot[0], jumped_spot[1], 'white')
         draw_circle_full(new_spot[0], new_spot[1], Jumped_Color)
         #Update Dictionary for jumped Piece
         if color == 'black':
-
         
             del Black[key]
             del Red[Jumped]
             Black[Key_to_move_to] = tuple([new_spot[0], new_spot[1], 'King'])
             print(Black)
+            return Key_to_move_to, 'jumped'
+
+
+            
         
         if color == 'red':
 
@@ -793,6 +804,9 @@ def computer_moves(color):
             del Black[Jumped]
             Red[Key_to_move_to] = tuple([new_spot[0], new_spot[1], 'King'])
             print(Red)
+            return Key_to_move_to, 'jumped'
+        
+         
 
         
 
@@ -816,14 +830,16 @@ def computer_moves(color):
             del Black[key]
             Black[Key_to_move_to] = tuple([new_spot[0], new_spot[1], 'normal'])
             print(Black)
+            return Key_to_move_to, 'no jump'
         elif color == 'red':
 
             del Red[key]
             Red[Key_to_move_to] = tuple([new_spot[0], new_spot[1], 'normal'])
             print(Red)
+            return Key_to_move_to, 'no jump'
     
-computer_moves('red')
-
+print(computer_moves('red'))
+Player_Color = 'black' 
 #TODO When computer makes a move that is a jump, force computer to move again with same piece
 
 #TODO Create the computer moves, create the human/computer interaction...
@@ -864,8 +880,6 @@ computer_moves('red')
 #         starting_player = random.randint(0,1)
 #         if starting_player == 0:
 #             Player_turn = True
-
-
 
 
 

@@ -322,7 +322,7 @@ def find_piece_movement(Coordinate):
 
 
     
-    Possible_Jumps = []
+    
        
     if Color=='black':
         new_moves = [x for x in Moves if x not in Black.keys()]
@@ -331,7 +331,8 @@ def find_piece_movement(Coordinate):
             #Check to see if spots it can move to are red, for jumping
             Possible_Jumps = [x for x in new_moves if x in Red.keys()]
             #Resetting new moves to remove spots on red pieces
-            new_moves = [x for x in new_moves if x not in Possible_Jumps]
+        
+        new_moves = [x for x in new_moves if x not in Possible_Jumps]
             
     if Color=='red':
         new_moves = [x for x in Moves if x not in Red.keys()]
@@ -340,9 +341,11 @@ def find_piece_movement(Coordinate):
             #Check to see if spots it can move to are red, for jumping
             Possible_Jumps = [x for x in new_moves if x in Black.keys()]
             #Resetting new moves to remove spots on black pieces
-            new_moves = [x for x in new_moves if x not in Possible_Jumps]
+        new_moves = [x for x in new_moves if x not in Possible_Jumps]
             
-    
+#TODO fix this jumping function, on computer side, erroring
+# 
+#     
     Jump_Options = []
     if Index % squares_per_row != 0 and Index % squares_per_row != (squares_per_row-1):
         for piece in Possible_Jumps:
@@ -377,9 +380,13 @@ def find_piece_movement(Coordinate):
                     for k in Possible_Spots.keys():
                         if Jump_to_index == k:
                             Jump_Options.append(Jump_to_index)
+    
+    
 
     Jump_Dict = dict(zip(Jump_Options, Possible_Jumps ))
-
+    # if len(Jump_Options)>0:
+    #     print(Jump_Dict)
+    #     time.sleep(10)
     return new_moves, Jump_Dict          
 
 print(find_piece_movement((-350.0, -300.00)))
@@ -464,7 +471,7 @@ def draw_circle_full(x,y,color):
 
 #Player_Red is a global variable, to be used to condition whether a player can move as Red or Black within the function
 #For whatever reason, this is the only way to get this to work within Turtle functions
-
+Player_Color = 'red'
 
 INDEX = 99 
 Forced_Key = 100 
@@ -698,6 +705,10 @@ turtle.onkey(choose_piece, 'space')
 
 
 def computer_moves(**kwargs):
+    '''
+    Takes in multiple arguments, if there is no forced key, only takes in keyword argument
+    color=____, if position needs to be forced, takes in additional argument index =_____
+    '''
     forced_key = 99
 
     for k,v in kwargs.items():
@@ -716,6 +727,9 @@ def computer_moves(**kwargs):
         Pieces_to_check = Black
         Jumped_Color = 'green'
         Kinged_Color = 'green' 
+
+    
+
     keys = []
     random_keys = []
     moves = []
@@ -726,8 +740,7 @@ def computer_moves(**kwargs):
             if k == forced_key:
                 a = tuple([v[0], v[1]])
                 movement = find_piece_movement(a)
-        
-                
+                        
                 moves.append(movement)
                 keys.append(k)
                 random_keys.append(k)
@@ -743,75 +756,134 @@ def computer_moves(**kwargs):
                 moves.append(movement)
                 keys.append(k)
                 random_keys.append(k)
-    print(moves)
+    # print(moves)
     
     movement_dictionary = dict(zip(keys, moves))
-    #in jump moves, we have dictionary of key value pairs
-    #([18, 20], {11: 19})
-    #first value represents ending location, value represents piece to be jumped
-    #11 represents where piece can end up, 19 represents piece to be jumped 
+    
+    #{50: ([42, 43], {}), 51: ([43, 42, 44], {}), 52: ([44, 43, 45], {}), 53: ([45, 44], {}), \
+    # 56: ([48, 49], {}), 57: ([49, 48], {}), 58: ([49], {}), 62: ([54, 55], {}), \
+    # 63: ([55, 54], {}), 47: ([38], {31: 39}), 41: ([32, 34], {}), 33: ([25, 24, 26], {}),\
+    # 37: ([29, 28, 30], {}), 46: ([38], {})}
+    
+    #inside each value of each key in the movement dictionary lies a tuple containing a list, and a dictionary,
+    # each list represents possible non jump move ending locations for that piece, 
+    # and each dictionary consists of jump moves, which consist of key value pairs
+    # {11: 19})
+    #each key represents ending location, each value represents piece to be jumped
+    #so the outer key represents where the piece will move from,
+    # the inner dictionary key represents where the piece will end up, and the inner dictionary value
+    # represents which piece will be erased from opponents dictionary
+
+
+    #random_keys represents all possible checkers for a given color that are able to move    
 
     #Choose random key from possible moves
     length = len(random_keys)
     random_key = random.randint(0,length-1)
+    #random key represents all possible indexes of the random_key list
     key = random_keys[random_key]
-    print(key)
+    #key is index of piece being moved
     
-    #This checks to see if the current piece being moved is a King or not, 
-    #This is needed in case a piece that is already a king, is making a normal move, and
-    #Then it must be drawn retaining it's new color
-    if Pieces_to_check[key][2] == 'King':
-        King_Color = True
-    if Pieces_to_check[key][2] == 'normal':
-        King_Color = False
-
-            
-
-        
+              
     Random_Moves = movement_dictionary[key]
-    #([45, 44, 46], {})
-    moves = []
-    for x in Random_Moves[0]:
-        moves.append(x)
-    for k,v in Random_Moves[1]:
-        moves.append(k)
-    #Choose index to move to 
-    length = len(moves)
-    random_key = random.randint(0,length-1)
-    
-    Key_to_move_to = moves[random_key]
-    print(Key_to_move_to)
-    
-    
-    Jump = 0
-    #key is spot moved from
-    #Key_to_move_to is spot moved to
-    #Need to find out if the piece jumped or not
-    for k,v in Random_Moves[1].items():
-        if Key_to_move_to == k:
-            Jump = 1
-            Jumped = v 
+    #example : ([16, 17], {})
+    #Random Moves is now the chosen key's movement options
+    non_jumps = len(Random_Moves[0])
+    jumps = len(Random_Moves[1].keys())
 
-    if Jump == 1:
+    if non_jumps >0 and jumps >0:
+        is_jumped = random.randint(0,1)    
+    if non_jumps>0 and jumps==0:
+        is_jumped = 0
+    if non_jumps == 0 and jumps >0:
+        is_jumped = 1    
+
+
+    moves = []
+    if is_jumped == 0:
+        print(Random_Moves[0])
+        for x in Random_Moves[0]:
+            moves.append(x)
+        
+        length = len(moves)
+        random_key = random.randint(0,length-1)
+        
+        Key_to_move_to = moves[random_key]
+
         for k,v in Total.items():
             if k == key:
-                #Moving from this indexed spot
-                move_from_spot = v 
+                move_from_spot = v
+            if k == Key_to_move_to:
+                new_spot = v
+
+        draw_circle_full(move_from_spot[0], move_from_spot[1], 'white')
+        #Checking to see if moved piece is a king, before deciding on the color to draw
+        if Pieces_to_check[key][2] == 'normal':
+            draw_circle_full(new_spot[0], new_spot[1], color)
+            status = 'normal'
+        if Pieces_to_check[key][2] == 'King':
+            draw_circle_full(new_spot[0], new_spot[1], Kinged_Color)
+            status = 'King'
+
+
+        if color == 'black':
+
+        #Update Dictionary
+            del Black[key]
+
+            Black[Key_to_move_to] = tuple([new_spot[0], new_spot[1], status])
+            
+            return Key_to_move_to, 'no jump'
+
+        elif color == 'red':
+
+            del Red[key]
+            Red[Key_to_move_to] = tuple([new_spot[0], new_spot[1], status])
+            
+            return Key_to_move_to, 'no jump'
+    moves = []
+    
+    if is_jumped == 1:
+        #Piece is going to make a jump
+        print(Random_Moves[1].items())
+        for k,v in Random_Moves[1].items():
+            moves.append(k)
+        
+        length = len(moves)
+        random_key = random.randint(0,length-1)
+        
+        Key_to_move_to = moves[random_key]
+
+        for k,v in Random_Moves[1].items():
+            if k == Key_to_move_to:
+                Jumped = v 
+     
+      
+        for k,v in Total.items():
+            if k == key:
+                move_from_spot = v
+            #Moving from this indexed spot     
             if k == Jumped:
                 jumped_spot = v
+            #Spot that was jumped    
             if k == Key_to_move_to:
-                new_spot = v 
+                new_spot = v
+            #Spot that is moved to     
+        
         draw_circle_full(move_from_spot[0], move_from_spot[1], 'white')
         #Delete indexed spot that you are moving from
         draw_circle_full(jumped_spot[0], jumped_spot[1], 'white')
+        #Delete spot of opposite color that is being jumped
         draw_circle_full(new_spot[0], new_spot[1], Jumped_Color)
+        #Draw checker in the new moved to spot
+
         #Update Dictionary for jumped Piece
         if color == 'black':
         
             del Black[key]
             del Red[Jumped]
             Black[Key_to_move_to] = tuple([new_spot[0], new_spot[1], 'King'])
-            print(Black)
+            
             return Key_to_move_to, 'jumped'
 
 
@@ -822,92 +894,86 @@ def computer_moves(**kwargs):
             del Red[key]
             del Black[Jumped]
             Red[Key_to_move_to] = tuple([new_spot[0], new_spot[1], 'King'])
-            print(Red)
+            
+            
             return Key_to_move_to, 'jumped'
         
-         
+     
 
-        
-
-    if Jump == 0:
-        for k,v in Total.items():
-            if k == key:
-                move_from_spot = v
-            if k == Key_to_move_to:
-                new_spot = v     
-        draw_circle_full(move_from_spot[0], move_from_spot[1], 'white')
-        #Checking to see if moved piece is a king, before deciding on the color to draw
-        if King_Color == False:
-            draw_circle_full(new_spot[0], new_spot[1], color)
-        elif King_Color == True:
-            draw_circle_full(new_spot[0], new_spot[1], Kinged_Color)
-
-
-        if color == 'black':
-
-        #Update Dictionary
-            del Black[key]
-            Black[Key_to_move_to] = tuple([new_spot[0], new_spot[1], 'normal'])
-            print(Black)
-            return Key_to_move_to, 'no jump'
-        elif color == 'red':
-
-            del Red[key]
-            Red[Key_to_move_to] = tuple([new_spot[0], new_spot[1], 'normal'])
-            print(Red)
-            return Key_to_move_to, 'no jump'
+   
     
-print(computer_moves(color='red', index=13))
-Player_Color = 'black' 
+# print(computer_moves(color='red', index=13))
+# Player_Color = 'black' 
 
 
 
-    
 
-#TODO When computer makes a move that is a jump, force computer to move again with same piece
-# Use the returned index from jump function, throw it into other function forcing the index to be the specific number,
-# as a variable
 
 #TODO Create the computer moves, create the human/computer interaction...
 
 # When computer or human makes a move that is not a jump, then switch to opposing player, 
 
-'''
-   
-while len(Red)>0 and len(Black)>0:
-    starting_color = random.randint(0,1)
+#Simulation of computer versus computer, to check their behavior
+
+
+
     
-    if starting_color == 0:
-        Player_turn = False 
-        Player_Color = 'black'
-        starting_player = random.randint(0,1)
-        if starting_player == 0:
-            Player_turn = True
+starting_color = random.randint(0,1)
 
-            while Player_turn == True:
+if starting_color == 0:
+    Player_turn = 'black'
+    
+if starting_color == 1:
+    Player_turn = 'red'
 
-                #Need to figure out if dictionary changed, and figure out if there was a jump
-                #So if the black dictionary changes, 
+while len(Red)>0 and len(Black)>0:
 
+    while Player_turn == 'black':
 
-
-
-
-            while Player_turn == False:
-                computer_moves('red')
-                #as long as the computer move was not a jump, we can switch back to the human player        
-                #in the case of a jump, we need to track the piece that jumped, track where the piece ended up
-                #and force that piece to move again, until it ends not in a jump
-                # then we switch back to human player
+        Move = computer_moves(color='black')
+        if Move[1] == 'no jump':
+            Player_turn = 'red'
         
-    if starting_color == 1:
-        Player_turn = False 
-        Player_Color = 'red'
-        starting_player = random.randint(0,1)
-        if starting_player == 0:
-            Player_turn = True
+        if Move[1] == 'jumped':
+            Jumped =True
+            index = Move[0]
+            
+            while Jumped == True:
+                Move = computer_moves(color='black', index=index)
+                if Move[1] == 'jumped':
+                    index = Move[0]
+                if Move[1]!='jumped':
+                    Jumped=False
+            
+            
+        Player_turn = 'red'             
 
-'''
+
+
+    while Player_turn == 'red':
+
+        Move = computer_moves(color='red')
+        
+        if Move[1] == 'no jump':
+            Player_turn = 'black'
+        
+        if Move[1] == 'jumped':
+            Jumped = True
+            index = Move[0]
+            
+            while Jumped == True:
+                Move = computer_moves(color='red', index=index)
+                if Move[1] == 'jumped':
+                    index = Move[0]
+                if Move[1]!='jumped':
+                    Jumped=False
+            
+            
+        Player_turn= 'black'     
+        
+
+
+
 
 
 #TODO Create the computer moves, create the human/computer interaction...

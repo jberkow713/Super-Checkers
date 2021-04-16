@@ -697,9 +697,16 @@ turtle.onkey(move_down, "Down")
 turtle.onkey(choose_piece, 'space')
 
 
-def computer_moves(color):
+def computer_moves(**kwargs):
+    forced_key = 99
 
-       
+    for k,v in kwargs.items():
+        if k == 'color':
+            color = v
+        if k == 'index':
+            forced_key = v
+
+
 
     if color == 'red':
         Pieces_to_check = Red
@@ -713,17 +720,29 @@ def computer_moves(color):
     random_keys = []
     moves = []
 
-          
-      
+    if forced_key<99:
 
-    for k,v in Pieces_to_check.items():
-        a = tuple([v[0], v[1]])
-        movement = find_piece_movement(a)
-        if len(movement[0])>0 or len(movement[1])>0:
+        for k,v in Pieces_to_check.items():
+            if k == forced_key:
+                a = tuple([v[0], v[1]])
+                movement = find_piece_movement(a)
+        
                 
-            moves.append(movement)
-            keys.append(k)
-            random_keys.append(k)
+                moves.append(movement)
+                keys.append(k)
+                random_keys.append(k)
+
+      
+    elif forced_key==99:
+
+        for k,v in Pieces_to_check.items():
+            a = tuple([v[0], v[1]])
+            movement = find_piece_movement(a)
+            if len(movement[0])>0 or len(movement[1])>0:
+                    
+                moves.append(movement)
+                keys.append(k)
+                random_keys.append(k)
     print(moves)
     
     movement_dictionary = dict(zip(keys, moves))
@@ -838,50 +857,57 @@ def computer_moves(color):
             print(Red)
             return Key_to_move_to, 'no jump'
     
-print(computer_moves('red'))
+print(computer_moves(color='red', index=13))
 Player_Color = 'black' 
+
+
+
+    
+
 #TODO When computer makes a move that is a jump, force computer to move again with same piece
+# Use the returned index from jump function, throw it into other function forcing the index to be the specific number,
+# as a variable
 
 #TODO Create the computer moves, create the human/computer interaction...
 
 # When computer or human makes a move that is not a jump, then switch to opposing player, 
 
-
+'''
    
-# while len(Red)>0 and len(Black)>0:
-#     starting_color = random.randint(0,1)
+while len(Red)>0 and len(Black)>0:
+    starting_color = random.randint(0,1)
     
-#     if starting_color == 0:
-#         Player_turn = False 
-#         Player_Color = 'black'
-#         starting_player = random.randint(0,1)
-#         if starting_player == 0:
-#             Player_turn = True
+    if starting_color == 0:
+        Player_turn = False 
+        Player_Color = 'black'
+        starting_player = random.randint(0,1)
+        if starting_player == 0:
+            Player_turn = True
 
-#             while Player_turn == True:
+            while Player_turn == True:
 
-#                 #Need to figure out if dictionary changed, and figure out if there was a jump
-#                 #So if the black dictionary changes, 
-
-
+                #Need to figure out if dictionary changed, and figure out if there was a jump
+                #So if the black dictionary changes, 
 
 
 
-#             while Player_turn == False:
-#                 computer_moves('red')
-#                 #as long as the computer move was not a jump, we can switch back to the human player        
-#                 #in the case of a jump, we need to track the piece that jumped, track where the piece ended up
-#                 #and force that piece to move again, until it ends not in a jump
-#                 # then we switch back to human player
+
+
+            while Player_turn == False:
+                computer_moves('red')
+                #as long as the computer move was not a jump, we can switch back to the human player        
+                #in the case of a jump, we need to track the piece that jumped, track where the piece ended up
+                #and force that piece to move again, until it ends not in a jump
+                # then we switch back to human player
         
-#     if starting_color == 1:
-#         Player_turn = False 
-#         Player_Color = 'red'
-#         starting_player = random.randint(0,1)
-#         if starting_player == 0:
-#             Player_turn = True
+    if starting_color == 1:
+        Player_turn = False 
+        Player_Color = 'red'
+        starting_player = random.randint(0,1)
+        if starting_player == 0:
+            Player_turn = True
 
-
+'''
 
 
 #TODO Create the computer moves, create the human/computer interaction...

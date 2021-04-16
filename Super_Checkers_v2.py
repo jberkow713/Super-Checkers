@@ -205,7 +205,7 @@ def find_piece_type(Coordinate):
             if Coordinate == k:
                 return ('black',v,Position)    
 
-# print(find_piece_type((-350.0, -300.0)))
+print(find_piece_type((-350.0, -300.0)))
 
 def find_piece_movement(Coordinate):
     '''
@@ -219,11 +219,25 @@ def find_piece_movement(Coordinate):
     Type = Piece_Description[1]
     Index = Piece_Description[2]
     # example of Piece_Description = ('red', 'normal', 0)
+    # Coordinate:(-350.0, -300.00)
+    if Color == 'red':
+        if Index >= squares_per_row*(squares_per_row-1):
+            Red[Index] = tuple([Coordinate[0], Coordinate[1], 'King'])
+            Type = 'King'
+    if Color == 'black':
+        if Index < squares_per_row:
+            Black[Index] = tuple([Coordinate[0], Coordinate[1], 'King'])
+            Type = 'King'
+
+    
+    
     Possible_Spots = find_open_spots()
     #Dictionary of open spots on the board, keys and their corresponding coordinates 
     Moves = []
+        
     if Type== 'normal':
         if Color=='red':
+            
             if Index< (squares_per_row*(squares_per_row-1)):
                 
 
@@ -342,10 +356,9 @@ def find_piece_movement(Coordinate):
             Possible_Jumps = [x for x in new_moves if x in Black.keys()]
             #Resetting new moves to remove spots on black pieces
         new_moves = [x for x in new_moves if x not in Possible_Jumps]
-            
-#TODO fix this jumping function, on computer side, erroring
-# 
-#     
+
+         
+    Final_Possible_Spots = []
     Jump_Options = []
     if Index % squares_per_row != 0 and Index % squares_per_row != (squares_per_row-1):
         for piece in Possible_Jumps:
@@ -359,6 +372,13 @@ def find_piece_movement(Coordinate):
                 for k in Possible_Spots.keys():
                     if Jump_to_index == k:
                         Jump_Options.append(Jump_to_index)
+                        Final_Possible_Spots.append(piece)
+
+            
+    #TODO fix this jumping function part, on computer side, erroring
+# 
+#Possible moves refers to if spot is in key of opposite color
+#      
     if Index % squares_per_row == 0 or Index % squares_per_row == (squares_per_row-1):
         if Index >=(squares_per_row)*(squares_per_row-1) or Index < squares_per_row:
             for piece in Possible_Jumps:
@@ -382,14 +402,19 @@ def find_piece_movement(Coordinate):
                             Jump_Options.append(Jump_to_index)
     
     
-
-    Jump_Dict = dict(zip(Jump_Options, Possible_Jumps ))
+    Jump_Dict = dict(zip(Jump_Options, Final_Possible_Spots ))
+    # if len(Jump_Dict)>1:
+    #     print(Index)
+    #     print(Possible_Jumps)
+    #     print(Jump_Options)
+    #     print(Jump_Dict)
+    #     time.sleep(15)
     # if len(Jump_Options)>0:
     #     print(Jump_Dict)
     #     time.sleep(10)
     return new_moves, Jump_Dict          
 
-print(find_piece_movement((-350.0, -300.00)))
+# print(find_piece_movement((-350.0, -300.00)))
 
 #Movement for Player
 #speed is used for how far player moves with keystroke
@@ -845,10 +870,12 @@ def computer_moves(**kwargs):
     
     if is_jumped == 1:
         #Piece is going to make a jump
-        print(Random_Moves[1].items())
+        # print(Random_Moves[1].items())
         for k,v in Random_Moves[1].items():
             moves.append(k)
         
+        
+
         length = len(moves)
         random_key = random.randint(0,length-1)
         

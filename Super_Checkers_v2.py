@@ -3,7 +3,6 @@ import time
 import random 
 #Create Board
 import gym
- 
 
 def draw_board(Boardsize, squares_per_row):
     '''
@@ -12,7 +11,6 @@ def draw_board(Boardsize, squares_per_row):
     Dictionary of all Black Squares and their positions, and a General dictionary of all 
     Squares and their positions
     '''    
-       
     sc = turtle.Screen()
     sc.setup(Boardsize, Boardsize)
     pen = turtle.Turtle()
@@ -54,8 +52,7 @@ def draw_board(Boardsize, squares_per_row):
     Black_Positions = []
     
     Red_Positions = []
-    
-    
+   
     for row in range(1, 3):
 
         for i in range(squares_per_row):
@@ -70,8 +67,7 @@ def draw_board(Boardsize, squares_per_row):
 
         pen.up()
         pen.setpos((-Boardsize/2)+.5*(Boardsize/squares_per_row), (-Boardsize/2)+row*(Boardsize/squares_per_row)) 
-    
-    
+   
     pen.up()
     pen.setpos((-Boardsize/2)+.5*(Boardsize/squares_per_row), (Boardsize/2)-(2*(Boardsize/squares_per_row)))    
     for row in range(squares_per_row-1,squares_per_row+1):
@@ -86,8 +82,7 @@ def draw_board(Boardsize, squares_per_row):
         
         pen.up()
         pen.setpos((-Boardsize/2)+.5*(Boardsize/squares_per_row), (-Boardsize/2)+row*(Boardsize/squares_per_row))
-     
-    
+   
     Total_Squares = list(range(0,squares_per_row*squares_per_row))
     Tuple_Position_List = []
     starting_x_cord = (-Boardsize/2)+.5*(Boardsize/squares_per_row)
@@ -124,12 +119,10 @@ def draw_board(Boardsize, squares_per_row):
         a = starting_x_cord
         b = starting_y_cord
 
-
     Position_Dictionary_2 = dict(zip(Total_Squares_2, Tuple_Position_List_2))     
     Position_Dictionary = dict(zip(Total_Squares, Tuple_Position_List))
     Final_Black_Dict = dict(zip(Black, Black_Positions))
     Final_Red_Dict = dict(zip(Red, Red_Positions))
-
 
     return Final_Black_Dict, Final_Red_Dict, Position_Dictionary, Position_Dictionary_2
 
@@ -139,7 +132,6 @@ Black = A[0]
 Red = A[1]
 Total = A[2]
 Total_Up = A[3]
-
 
 def find_open_spots():
     '''
@@ -169,8 +161,6 @@ def find_open_spots():
 
 # print(find_open_spots())
 
-
-
 def find_piece_type(Coordinate):
     '''
     Creates possible spots to move to for a given piece, Use Dictionary of that piece
@@ -181,7 +171,6 @@ def find_piece_type(Coordinate):
     Red_Types = []
     Black_Spots = []
     Black_Types = []
-
     
     for v in Red.values():
         x = tuple([v[0], v[1]])
@@ -222,7 +211,6 @@ def find_piece_movement(Coordinate):
     # example of Piece_Description = ('red', 'normal', 0)
     # Coordinate:(-350.0, -300.00)
    
-    
     Possible_Spots = find_open_spots()
     #Dictionary of open spots on the board, keys and their corresponding coordinates 
     Moves = []
@@ -276,7 +264,6 @@ def find_piece_movement(Coordinate):
                 Moves.append(Index+squares_per_row)
                 Moves.append(Index+squares_per_row+1)
                           
-
             elif Index < squares_per_row:
 
                 # Piece is not on an edge, but is at bottom row of board
@@ -324,12 +311,7 @@ def find_piece_movement(Coordinate):
                 Moves.append(Index-1)
                 Moves.append(Index-squares_per_row)
                 Moves.append(Index-squares_per_row-1)
-
-
-
-    
-    
-       
+      
     if Color=='black':
         new_moves = [x for x in Moves if x not in Black.keys()]
                   
@@ -348,14 +330,12 @@ def find_piece_movement(Coordinate):
             Possible_Jumps = [x for x in new_moves if x in Black.keys()]
             #Resetting new moves to remove spots on black pieces
         new_moves = [x for x in new_moves if x not in Possible_Jumps]
-
          
     Final_Possible_Spots = []
     Jump_Options = []
     if Index % squares_per_row != 0 and Index % squares_per_row != (squares_per_row-1):
         for piece in Possible_Jumps:
-        
-                        
+                       
             if piece % squares_per_row != 0 and piece % squares_per_row != (squares_per_row-1) \
                 and piece < (squares_per_row  * (squares_per_row-1)) and piece> (squares_per_row-1):
             
@@ -365,12 +345,10 @@ def find_piece_movement(Coordinate):
                     if Jump_to_index == k:
                         Jump_Options.append(Jump_to_index)
                         Final_Possible_Spots.append(piece)
-            
-      
+     
     if Index % squares_per_row == 0 or Index % squares_per_row == (squares_per_row-1):
         if Index >=(squares_per_row)*(squares_per_row-1) or Index < squares_per_row:
             for piece in Possible_Jumps:
-
 
                 Direction = piece - Index
                 Jump_to_index = piece+Direction
@@ -380,7 +358,6 @@ def find_piece_movement(Coordinate):
         elif Index < (squares_per_row  * (squares_per_row-1)) and Index > (squares_per_row-1):
             for piece in Possible_Jumps:
 
-
                 if piece < (squares_per_row  * (squares_per_row-1)) and piece> (squares_per_row-1):
 
                     Direction = piece - Index
@@ -388,8 +365,7 @@ def find_piece_movement(Coordinate):
                     for k in Possible_Spots.keys():
                         if Jump_to_index == k:
                             Jump_Options.append(Jump_to_index)
-    
-    
+   
     Jump_Dict = dict(zip(Jump_Options, Final_Possible_Spots ))
     
     return new_moves, Jump_Dict          
@@ -411,7 +387,6 @@ player.setposition(Starting_pos_x , Starting_pos_y )
 player.setheading(90)
 
 def move_left():
-
                     
     x = player.xcor()
     x -= speed      
@@ -421,8 +396,7 @@ def move_left():
     
     player.setx(x)
     player.setpos(x, player.ycor())
-    
-                
+               
 def move_right():
     x = player.xcor()
     x += speed
@@ -431,7 +405,6 @@ def move_right():
     player.setx(x)
     player.setpos(x, player.ycor())
     
-
 def move_up():
     y = player.ycor()
     y += speed
@@ -447,7 +420,6 @@ def move_down():
         y = -350
     player.sety(y)
     player.setpos(player.xcor(), y)
-
 
 def draw_circle(x,y,color):
     pen = turtle.Turtle()
@@ -485,10 +457,8 @@ def choose_piece():
     They are limited to move only the color which Player_Color is, and in the event of a jump, they must move
     the jumped piece again until they make a non jumped move
     '''
-    
     position = player.pos()
        
-
     for k,v in Total_Up.items():
         if v == position:
             index=k
@@ -498,10 +468,8 @@ def choose_piece():
     if Player_Color =='red':
         if INDEX == Current_Piece:
                 
-
             for k,v in Red.items():
                           
-
                     if k == index == Forced_Key:
                         coords = tuple([v[0], v[1]])
                         possible_spots = find_piece_movement((coords))
@@ -518,22 +486,18 @@ def choose_piece():
       
     if Player_Color == 'black' :
         if INDEX == Current_Piece:
-                  
 
             for k,v in Black.items():
-                
-                    
+                   
                     if k == index == Forced_Key:
                                     
                         coords = tuple([v[0], v[1]])
                         possible_spots = find_piece_movement((coords))
                         Trigger = 1
-
         
         if INDEX != Current_Piece:   
             for k,v in Black.items():
                 
-
                     if k == index:
                         coords = tuple([v[0], v[1]])
                         possible_spots = find_piece_movement((coords))
@@ -561,9 +525,7 @@ def choose_piece():
         Will allow player to move, if spot moving to is one of the previous spots designated through 
         Choose_Piece function, will update dictionary as well
         '''
-             
-                
-               
+              
         for k,v in Red.items():
             if k == index:
                 if v[2]=='normal':
@@ -665,12 +627,7 @@ def choose_piece():
 
                 global Forced_Key
                 Forced_Key = Moved_to_key
-                
-                
-                
-                               
-
-          
+      
             if drawing_color == 'red' or drawing_color == 'orange':
                 for k,v in possible_spots[1].items():
                     if Moved_to_key == k:
@@ -686,10 +643,7 @@ def choose_piece():
                 del Black[to_be_deleted]
                 del Red[index]
                 Red[Moved_to_key] = tuple([Drawing_Coordinate[0], Drawing_Coordinate[1], 'King'])
-
-                
-
-            
+           
             if drawing_color == 'red':
                 jumped_color = 'orange'
             elif drawing_color == 'black':
@@ -719,8 +673,6 @@ def computer_moves(**kwargs):
         if k == 'index':
             forced_key = v
 
-
-
     if color == 'red':
         Pieces_to_check = Red
         Jumped_Color = 'orange'
@@ -729,8 +681,6 @@ def computer_moves(**kwargs):
         Pieces_to_check = Black
         Jumped_Color = 'green'
         Kinged_Color = 'green' 
-
-    
 
     keys = []
     random_keys = []
@@ -746,7 +696,6 @@ def computer_moves(**kwargs):
                 moves.append(movement)
                 keys.append(k)
                 random_keys.append(k)
-
       
     elif forced_key==99:
 
@@ -761,8 +710,6 @@ def computer_moves(**kwargs):
     # print(moves)
     
     movement_dictionary = dict(zip(keys, moves))
-       
-    
     #random_keys represents all possible checkers for a given color that are able to move    
 
     #Choose random key from possible moves
@@ -771,7 +718,6 @@ def computer_moves(**kwargs):
     #random key represents all possible indexes of the random_key list
     key = random_keys[random_key]
     #key is index of piece being moved
-    
               
     Random_Moves = movement_dictionary[key]
     #example : ([16, 17], {})
@@ -802,8 +748,7 @@ def computer_moves(**kwargs):
                 move_from_spot = v
             if k == Key_to_move_to:
                 new_spot = v
-        
-               
+              
         draw_circle_full(move_from_spot[0], move_from_spot[1], 'white')
         #Checking to see if moved piece is a king, before deciding on the color to draw
         new_status = None
@@ -827,7 +772,6 @@ def computer_moves(**kwargs):
         if Pieces_to_check[key][2] == 'King':
             draw_circle_full(new_spot[0], new_spot[1], Kinged_Color)
             status = 'King'
-
         
         if color == 'black':
                          
@@ -851,8 +795,6 @@ def computer_moves(**kwargs):
         # print(Random_Moves[1].items())
         for k,v in Random_Moves[1].items():
             moves.append(k)
-        
-        
 
         length = len(moves)
         random_key = random.randint(0,length-1)
@@ -863,7 +805,6 @@ def computer_moves(**kwargs):
             if k == Key_to_move_to:
                 Jumped = v 
      
-      
         for k,v in Total.items():
             if k == key:
                 move_from_spot = v
@@ -890,17 +831,13 @@ def computer_moves(**kwargs):
             Black[Key_to_move_to] = tuple([new_spot[0], new_spot[1], 'King'])
             
             return Key_to_move_to, 'jumped'
-
-
-            
         
         if color == 'red':
 
             del Red[key]
             del Black[Jumped]
             Red[Key_to_move_to] = tuple([new_spot[0], new_spot[1], 'King'])
-            
-            
+           
             return Key_to_move_to, 'jumped'
   
 starting_color = random.randint(0,1)
@@ -929,11 +866,8 @@ while len(Red)>0 and len(Black)>0:
                     index = Move[0]
                 if Move[1]!='jumped':
                     Jumped=False
-            
-            
+           
         Player_turn = 'red'             
-
-
 
     while Player_turn == 'red':
 
@@ -952,7 +886,6 @@ while len(Red)>0 and len(Black)>0:
                     index = Move[0]
                 if Move[1]!='jumped':
                     Jumped=False
-            
             
         Player_turn= 'black'     
         

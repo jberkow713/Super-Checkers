@@ -2,6 +2,7 @@ import turtle
 import time
 import random 
 #Create Board
+import gym
  
 
 def draw_board(Boardsize, squares_per_row):
@@ -220,16 +221,7 @@ def find_piece_movement(Coordinate):
     Index = Piece_Description[2]
     # example of Piece_Description = ('red', 'normal', 0)
     # Coordinate:(-350.0, -300.00)
-    if Color == 'red':
-        if Index >= squares_per_row*(squares_per_row-1):
-            Red[Index] = tuple([Coordinate[0], Coordinate[1], 'King'])
-            Type = 'King'
-    if Color == 'black':
-        if Index < squares_per_row:
-            Black[Index] = tuple([Coordinate[0], Coordinate[1], 'King'])
-            Type = 'King'
-
-    
+   
     
     Possible_Spots = find_open_spots()
     #Dictionary of open spots on the board, keys and their corresponding coordinates 
@@ -373,12 +365,8 @@ def find_piece_movement(Coordinate):
                     if Jump_to_index == k:
                         Jump_Options.append(Jump_to_index)
                         Final_Possible_Spots.append(piece)
-
             
-    #TODO fix this jumping function part, on computer side, erroring
-# 
-#Possible moves refers to if spot is in key of opposite color
-#      
+      
     if Index % squares_per_row == 0 or Index % squares_per_row == (squares_per_row-1):
         if Index >=(squares_per_row)*(squares_per_row-1) or Index < squares_per_row:
             for piece in Possible_Jumps:
@@ -403,15 +391,7 @@ def find_piece_movement(Coordinate):
     
     
     Jump_Dict = dict(zip(Jump_Options, Final_Possible_Spots ))
-    # if len(Jump_Dict)>1:
-    #     print(Index)
-    #     print(Possible_Jumps)
-    #     print(Jump_Options)
-    #     print(Jump_Dict)
-    #     time.sleep(15)
-    # if len(Jump_Options)>0:
-    #     print(Jump_Dict)
-    #     time.sleep(10)
+    
     return new_moves, Jump_Dict          
 
 # print(find_piece_movement((-350.0, -300.00)))
@@ -490,9 +470,6 @@ def draw_circle_full(x,y,color):
     pen.begin_fill()
     pen.circle(49)
     pen.end_fill()
-
-
-
 
 #Player_Red is a global variable, to be used to condition whether a player can move as Red or Black within the function
 #For whatever reason, this is the only way to get this to work within Turtle functions
@@ -784,22 +761,8 @@ def computer_moves(**kwargs):
     # print(moves)
     
     movement_dictionary = dict(zip(keys, moves))
+       
     
-    #{50: ([42, 43], {}), 51: ([43, 42, 44], {}), 52: ([44, 43, 45], {}), 53: ([45, 44], {}), \
-    # 56: ([48, 49], {}), 57: ([49, 48], {}), 58: ([49], {}), 62: ([54, 55], {}), \
-    # 63: ([55, 54], {}), 47: ([38], {31: 39}), 41: ([32, 34], {}), 33: ([25, 24, 26], {}),\
-    # 37: ([29, 28, 30], {}), 46: ([38], {})}
-    
-    #inside each value of each key in the movement dictionary lies a tuple containing a list, and a dictionary,
-    # each list represents possible non jump move ending locations for that piece, 
-    # and each dictionary consists of jump moves, which consist of key value pairs
-    # {11: 19})
-    #each key represents ending location, each value represents piece to be jumped
-    #so the outer key represents where the piece will move from,
-    # the inner dictionary key represents where the piece will end up, and the inner dictionary value
-    # represents which piece will be erased from opponents dictionary
-
-
     #random_keys represents all possible checkers for a given color that are able to move    
 
     #Choose random key from possible moves
@@ -823,10 +786,9 @@ def computer_moves(**kwargs):
     if non_jumps == 0 and jumps >0:
         is_jumped = 1    
 
-
     moves = []
     if is_jumped == 0:
-        print(Random_Moves[0])
+        
         for x in Random_Moves[0]:
             moves.append(x)
         
@@ -840,19 +802,35 @@ def computer_moves(**kwargs):
                 move_from_spot = v
             if k == Key_to_move_to:
                 new_spot = v
-
+        
+               
         draw_circle_full(move_from_spot[0], move_from_spot[1], 'white')
         #Checking to see if moved piece is a king, before deciding on the color to draw
+        new_status = None
         if Pieces_to_check[key][2] == 'normal':
-            draw_circle_full(new_spot[0], new_spot[1], color)
-            status = 'normal'
+            #if the piece moving was normal, and it has now hit the edge of the board, update color
+            if color == 'black':
+                if Key_to_move_to < 8:
+                    new_status = 'King' 
+            if color == 'red':
+                if Key_to_move_to>=56:
+                    new_status = 'King'
+            
+            if new_status:
+                draw_circle_full(new_spot[0], new_spot[1], Kinged_Color)
+                status = new_status
+            
+            elif new_status==None:
+                draw_circle_full(new_spot[0], new_spot[1], color)
+                status = 'normal'
+        
         if Pieces_to_check[key][2] == 'King':
             draw_circle_full(new_spot[0], new_spot[1], Kinged_Color)
             status = 'King'
 
-
+        
         if color == 'black':
-
+                         
         #Update Dictionary
             del Black[key]
 
@@ -861,7 +839,7 @@ def computer_moves(**kwargs):
             return Key_to_move_to, 'no jump'
 
         elif color == 'red':
-
+            
             del Red[key]
             Red[Key_to_move_to] = tuple([new_spot[0], new_spot[1], status])
             
@@ -924,27 +902,7 @@ def computer_moves(**kwargs):
             
             
             return Key_to_move_to, 'jumped'
-        
-     
-
-   
-    
-# print(computer_moves(color='red', index=13))
-# Player_Color = 'black' 
-
-
-
-
-
-#TODO Create the computer moves, create the human/computer interaction...
-
-# When computer or human makes a move that is not a jump, then switch to opposing player, 
-
-#Simulation of computer versus computer, to check their behavior
-
-
-
-    
+  
 starting_color = random.randint(0,1)
 
 if starting_color == 0:
@@ -998,19 +956,11 @@ while len(Red)>0 and len(Black)>0:
             
         Player_turn= 'black'     
         
-
-
-
-
-
 #TODO Create the computer moves, create the human/computer interaction...
 
 # When computer or human makes a move that is not a jump, then switch to opposing player, 
 
-# When computer makes a move that is a jump force computer to move again with the same piece
-
-# Time to create game loop
-
+#Simulation of computer versus computer, to check their behavior
 
 turtle.done()
 

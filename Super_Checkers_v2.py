@@ -3,6 +3,7 @@ import time
 import random 
 #Create Board
 import gym
+import numpy as np
 
 def draw_board(Boardsize, squares_per_row):
     '''
@@ -839,7 +840,26 @@ def computer_moves(**kwargs):
             Red[Key_to_move_to] = tuple([new_spot[0], new_spot[1], 'King'])
            
             return Key_to_move_to, 'jumped'
+
+#Convert board state to np.array
+# Black Keys: dict_keys([48, 49, 50, 51, 52, 53, 54, 56, 57, 58, 59, 60, 61, 62, 63, 47])
+#Red Keys: dict_keys([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+def represent_board(black_list, red_list):
+
+  board = np.zeros((8,8), dtype=int)
   
+  for x in black_list:
+    row = x // 8
+    column = x % 8
+    board[row][column] = 1
+  for x in red_list:
+    row = x //8
+    column = x % 8
+    board[row][column] = 2  
+
+  return board  
+
+
 starting_color = random.randint(0,1)
 
 if starting_color == 0:
@@ -866,6 +886,16 @@ while len(Red)>0 and len(Black)>0:
                     index = Move[0]
                 if Move[1]!='jumped':
                     Jumped=False
+        
+        Black_Keys = []
+        for x in Black.keys():
+            Black_Keys.append(x)
+               
+        Red_Keys = []
+        for x in Red.keys():
+            Red_Keys.append(x)
+
+        print(represent_board(Black_Keys, Red_Keys))        
            
         Player_turn = 'red'             
 
@@ -886,7 +916,17 @@ while len(Red)>0 and len(Black)>0:
                     index = Move[0]
                 if Move[1]!='jumped':
                     Jumped=False
-            
+        Black_Keys = []
+        for x in Black.keys():
+            Black_Keys.append(x)
+               
+        Red_Keys = []
+        for x in Red.keys():
+            Red_Keys.append(x)
+
+        print(represent_board(Black_Keys, Red_Keys))      
+        
+        
         Player_turn= 'black'     
         
 #TODO Create the computer moves, create the human/computer interaction...

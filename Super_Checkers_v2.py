@@ -848,15 +848,22 @@ def computer_moves(**kwargs):
 # Does not really matter , but helps distinguish one color's pieces from the other colors pieces
 
 
-def represent_board(black_list, red_list):
+def represent_board():
 
   board = np.zeros((8,8), dtype=int)
-  
-  for x in black_list:
+  Black_Keys = []
+  for x in Black.keys():
+      Black_Keys.append(x)
+               
+  Red_Keys = []
+  for x in Red.keys():
+      Red_Keys.append(x)
+
+  for x in Black_Keys:
     row = 7 - (x // 8)
     column = x % 8
     board[row][column] = 1
-  for x in red_list:
+  for x in Red_Keys:
     row = 7 - (x //8)
     column = x % 8
     board[row][column] = 2 
@@ -917,19 +924,8 @@ if starting_color == 1:
 while len(Red)>0 and len(Black)>0:
 
     while Player_turn == 'black':
-        
-        
-        Black_Keys = []
-        for x in Black.keys():
-            Black_Keys.append(x)
-               
-        Red_Keys = []
-        for x in Red.keys():
-            Red_Keys.append(x)
-
-        Board = represent_board(Black_Keys, Red_Keys)
-        print(find_center_mass(Board))   
-        
+                
+                
         Move = computer_moves(color='black')
         if Move[1] == 'no jump':
             Player_turn = 'red'
@@ -945,7 +941,8 @@ while len(Red)>0 and len(Black)>0:
                 if Move[1]!='jumped':
                     Jumped=False
         
-            
+        Board = represent_board()
+        print(find_center_mass(Board))             
            
         Player_turn = 'red'             
 
@@ -953,16 +950,7 @@ while len(Red)>0 and len(Black)>0:
 
         Move = computer_moves(color='red')
 
-        Black_Keys = []
-        for x in Black.keys():
-            Black_Keys.append(x)
-               
-        Red_Keys = []
-        for x in Red.keys():
-            Red_Keys.append(x)
-
-        Board = represent_board(Black_Keys, Red_Keys)
-        print(find_center_mass(Board))   
+       
         
         if Move[1] == 'no jump':
             Player_turn = 'black'
@@ -977,7 +965,8 @@ while len(Red)>0 and len(Black)>0:
                     index = Move[0]
                 if Move[1]!='jumped':
                     Jumped=False
-               
+        Board = represent_board()
+        print(find_center_mass(Board))        
         
         Player_turn= 'black'     
         

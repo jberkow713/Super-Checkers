@@ -4,6 +4,7 @@ import random
 #Create Board
 import gym
 import numpy as np
+import math
 
 def draw_board(Boardsize, squares_per_row):
     '''
@@ -860,11 +861,11 @@ def represent_board():
       Red_Keys.append(x)
 
   for x in Black_Keys:
-    row = 7 - (x // 8)
+    row =  (x // 8)
     column = x % 8
     board[row][column] = 1
   for x in Red_Keys:
-    row = 7 - (x //8)
+    row =  (x //8)
     column = x % 8
     board[row][column] = 2 
 
@@ -874,7 +875,7 @@ def find_center_mass(Board):
     '''
     Finds center of mass for black pieces, and red pieces
     '''
-
+    
     black_result = np.where(Board==1)
     red_result = np.where(Board==2)
   
@@ -898,13 +899,54 @@ def find_center_mass(Board):
     center_row = row/len(red_result[0])
     center_column = column/len(red_result[1])
 
-    Red_Center = tuple([center_row, center_column])
-
-
-
+    Red_Center = tuple([center_row, center_column ])
+    
+    
     return Black_Center, Red_Center
 
+def find_center_key():
+    '''
+    Finding keys in the center of mass for a given color
+    '''
     
+    Centers = find_center_mass(Board)
+    black = Centers[0]
+    red = Centers[1]
+    
+    black_high = math.ceil(black[1])
+    black_low = math.floor(black[1])
+    black_high2 = math.ceil(black[0])
+    black_low2 = math.floor(black[0])
+    
+    
+    red_high = math.ceil(red[1])
+    red_low = math.floor(red[1])
+    red_high2 = math.ceil(red[0])
+    red_low2 = math.floor(red[0])
+    
+    
+
+    Black_Centers = []
+    for x in Black.keys():
+        remainder = x%8
+        if remainder == black_high or remainder == black_low:
+            if x >= black_low2*8 and x <= (black_high2+1)*8:
+                Black_Centers.append(x)
+    
+    Red_Centers = []
+    for x in Red.keys():
+        remainder = x%8
+        if remainder == red_high or remainder == red_low:
+            if x >= red_low2*8 and x <= (red_high2+1)*8:
+                Red_Centers.append(x)
+                        
+
+    return Black_Centers, Red_Centers
+
+
+    #((0.5625, 3.4375), (6.5, 3.5))
+
+
 
 
 
@@ -942,7 +984,8 @@ while len(Red)>0 and len(Black)>0:
                     Jumped=False
         
         Board = represent_board()
-        print(find_center_mass(Board))             
+        print(find_center_mass(Board))
+        print(find_center_key())             
            
         Player_turn = 'red'             
 
@@ -966,7 +1009,8 @@ while len(Red)>0 and len(Black)>0:
                 if Move[1]!='jumped':
                     Jumped=False
         Board = represent_board()
-        print(find_center_mass(Board))        
+        print(find_center_mass(Board))
+        print(find_center_key())         
         
         Player_turn= 'black'     
         

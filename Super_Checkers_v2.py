@@ -319,8 +319,9 @@ def find_piece_movement(Coordinate):
                   
         if Color=='black':
             #Check to see if spots it can move to are red, for jumping
-            Possible_Jumps = [x for x in new_moves if x in Red.keys()]
+            Possible_Jumps = [x for x in Moves if x in Red.keys()]
             #Resetting new moves to remove spots on red pieces
+            # print(Possible_Jumps)
         
         new_moves = [x for x in new_moves if x not in Possible_Jumps]
             
@@ -329,7 +330,8 @@ def find_piece_movement(Coordinate):
                         
         if Color=='red':
             #Check to see if spots it can move to are red, for jumping
-            Possible_Jumps = [x for x in new_moves if x in Black.keys()]
+            Possible_Jumps = [x for x in Moves if x in Black.keys()]
+            # print(Possible_Jumps)
             #Resetting new moves to remove spots on black pieces
         new_moves = [x for x in new_moves if x not in Possible_Jumps]
          
@@ -357,6 +359,7 @@ def find_piece_movement(Coordinate):
                 for k in Possible_Spots.keys():
                     if Jump_to_index == k:
                         Jump_Options.append(Jump_to_index)
+                        Final_Possible_Spots.append(piece)
         elif Index < (squares_per_row  * (squares_per_row-1)) and Index > (squares_per_row-1):
             for piece in Possible_Jumps:
 
@@ -367,6 +370,7 @@ def find_piece_movement(Coordinate):
                     for k in Possible_Spots.keys():
                         if Jump_to_index == k:
                             Jump_Options.append(Jump_to_index)
+                            Final_Possible_Spots.append(piece)
    
     Jump_Dict = dict(zip(Jump_Options, Final_Possible_Spots ))
     
@@ -687,6 +691,7 @@ def computer_moves(**kwargs):
     keys = []
     random_keys = []
     moves = []
+    jump_keys = []
 
     if forced_key<99:
 
@@ -694,6 +699,8 @@ def computer_moves(**kwargs):
             if k == forced_key:
                 a = tuple([v[0], v[1]])
                 movement = find_piece_movement(a)
+                if len(movement[1])>0:
+                    jump_keys.append(k)
                         
                 moves.append(movement)
                 keys.append(k)
@@ -705,6 +712,8 @@ def computer_moves(**kwargs):
             a = tuple([v[0], v[1]])
             movement = find_piece_movement(a)
             if len(movement[0])>0 or len(movement[1])>0:
+                if len(movement[1])>0:
+                    jump_keys.append(k)
                     
                 moves.append(movement)
                 keys.append(k)
@@ -714,12 +723,21 @@ def computer_moves(**kwargs):
     movement_dictionary = dict(zip(keys, moves))
     #random_keys represents all possible checkers for a given color that are able to move    
 
+    #{48: ([40, 41], {}), 49: ([41, 40, 42], {}), 
+    # 50: ([42, 41, 43], {}), 51: ([43, 42, 44], {}),
+    #  52: ([44, 43, 45], {}), 53: ([45, 44, 46], {}), 
+    # 54: ([46, 45, 47], {}), 55: ([47, 46], {})}
+    if len(jump_keys)>0:
+        length = len(jump_keys)
+        random_key = random.randint(0, length-1)
+        key = jump_keys[random_key]
     #Choose random key from possible moves
-    length = len(random_keys)
-    random_key = random.randint(0,length-1)
-    #random key represents all possible indexes of the random_key list
-    key = random_keys[random_key]
-    #key is index of piece being moved
+    elif len(jump_keys)==0:
+        length = len(random_keys)
+        random_key = random.randint(0,length-1)
+        #random key represents all possible indexes of the random_key list
+        key = random_keys[random_key]
+        #key is index of piece being moved
               
     Random_Moves = movement_dictionary[key]
     #example : ([16, 17], {})
@@ -728,11 +746,16 @@ def computer_moves(**kwargs):
     jumps = len(Random_Moves[1].keys())
 
     if non_jumps >0 and jumps >0:
-        is_jumped = random.randint(0,1)    
+        is_jumped = 1
+        # Temporarily forcing a jump if jump is possible, to improve gameplay
+        # and speed things up
+        # is_jumped = random.randint(0,1)    
     if non_jumps>0 and jumps==0:
         is_jumped = 0
     if non_jumps == 0 and jumps >0:
         is_jumped = 1    
+
+    
 
     moves = []
     if is_jumped == 0:
@@ -983,9 +1006,9 @@ while len(Red)>0 and len(Black)>0:
                 if Move[1]!='jumped':
                     Jumped=False
         
-        Board = represent_board()
-        print(find_center_mass(Board))
-        print(find_center_key())             
+        # Board = represent_board()
+        # print(find_center_mass(Board))
+        # print(find_center_key())             
            
         Player_turn = 'red'             
 
@@ -1008,9 +1031,9 @@ while len(Red)>0 and len(Black)>0:
                     index = Move[0]
                 if Move[1]!='jumped':
                     Jumped=False
-        Board = represent_board()
-        print(find_center_mass(Board))
-        print(find_center_key())         
+        # Board = represent_board()
+        # print(find_center_mass(Board))
+        # print(find_center_key())         
         
         Player_turn= 'black'     
         

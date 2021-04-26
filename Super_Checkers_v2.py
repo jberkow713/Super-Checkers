@@ -315,25 +315,21 @@ def find_piece_movement(Coordinate):
                 Moves.append(Index-squares_per_row-1)
       
     if Color=='black':
-        new_moves = [x for x in Moves if x not in Black.keys()]
-                  
+        
+        new_moves = [x for x in Moves if x in Possible_Spots.keys()]          
         if Color=='black':
             #Check to see if spots it can move to are red, for jumping
             Possible_Jumps = [x for x in Moves if x in Red.keys()]
-            #Resetting new moves to remove spots on red pieces
-            # print(Possible_Jumps)
         
-        new_moves = [x for x in new_moves if x not in Possible_Jumps]
             
     if Color=='red':
-        new_moves = [x for x in Moves if x not in Red.keys()]
+        
+        new_moves = [x for x in Moves if x in Possible_Spots.keys()]
                         
         if Color=='red':
             #Check to see if spots it can move to are red, for jumping
             Possible_Jumps = [x for x in Moves if x in Black.keys()]
-            # print(Possible_Jumps)
-            #Resetting new moves to remove spots on black pieces
-        new_moves = [x for x in new_moves if x not in Possible_Jumps]
+        
          
     Final_Possible_Spots = []
     Jump_Options = []
@@ -749,7 +745,7 @@ def computer_moves(**kwargs):
         is_jumped = 1
         # Temporarily forcing a jump if jump is possible, to improve gameplay
         # and speed things up
-        # is_jumped = random.randint(0,1)    
+          
     if non_jumps>0 and jumps==0:
         is_jumped = 0
     if non_jumps == 0 and jumps >0:
@@ -777,6 +773,7 @@ def computer_moves(**kwargs):
         draw_circle_full(move_from_spot[0], move_from_spot[1], 'white')
         #Checking to see if moved piece is a king, before deciding on the color to draw
         new_status = None
+        
         if Pieces_to_check[key][2] == 'normal':
             #if the piece moving was normal, and it has now hit the edge of the board, update color
             if color == 'black':
@@ -802,17 +799,15 @@ def computer_moves(**kwargs):
                          
         #Update Dictionary
             del Black[key]
-
             Black[Key_to_move_to] = tuple([new_spot[0], new_spot[1], status])
-            
             return Key_to_move_to, 'no jump'
 
         elif color == 'red':
             
             del Red[key]
             Red[Key_to_move_to] = tuple([new_spot[0], new_spot[1], status])
-            
             return Key_to_move_to, 'no jump'
+
     moves = []
     
     if is_jumped == 1:
@@ -864,13 +859,6 @@ def computer_moves(**kwargs):
             Red[Key_to_move_to] = tuple([new_spot[0], new_spot[1], 'King'])
            
             return Key_to_move_to, 'jumped'
-
-#Convert board state to np.array
-#Looking to used reinforced learning, now we have np.array with constantly updating board state
-# if value in np.array = 1, piece is black
-# if value in np.array = 2, pieces is red
-# Does not really matter , but helps distinguish one color's pieces from the other colors pieces
-
 
 def represent_board():
 
@@ -924,7 +912,6 @@ def find_center_mass(Board):
 
     Red_Center = tuple([center_row, center_column ])
     
-    
     return Black_Center, Red_Center
 
 def find_center_key():
@@ -946,8 +933,6 @@ def find_center_key():
     red_low = math.floor(red[1])
     red_high2 = math.ceil(red[0])
     red_low2 = math.floor(red[0])
-    
-    
 
     Black_Centers = []
     for x in Black.keys():
@@ -962,21 +947,8 @@ def find_center_key():
         if remainder == red_high or remainder == red_low:
             if x >= red_low2*8 and x <= (red_high2+1)*8:
                 Red_Centers.append(x)
-                        
 
     return Black_Centers, Red_Centers
-
-
-    #((0.5625, 3.4375), (6.5, 3.5))
-
-
-
-
-
-
-
-
-
 
 starting_color = random.randint(0,1)
 
@@ -989,8 +961,7 @@ if starting_color == 1:
 while len(Red)>0 and len(Black)>0:
 
     while Player_turn == 'black':
-                
-                
+               
         Move = computer_moves(color='black')
         if Move[1] == 'no jump':
             Player_turn = 'red'
@@ -1005,11 +976,7 @@ while len(Red)>0 and len(Black)>0:
                     index = Move[0]
                 if Move[1]!='jumped':
                     Jumped=False
-        
-        # Board = represent_board()
-        # print(find_center_mass(Board))
-        # print(find_center_key())             
-           
+
         Player_turn = 'red'             
 
     while Player_turn == 'red':
@@ -1031,13 +998,10 @@ while len(Red)>0 and len(Black)>0:
                     index = Move[0]
                 if Move[1]!='jumped':
                     Jumped=False
-        # Board = represent_board()
-        # print(find_center_mass(Board))
-        # print(find_center_key())         
-        
+       
         Player_turn= 'black'     
         
-#TODO Create the computer moves, create the human/computer interaction...
+#TODO Create the human/computer interaction...
 
 # When computer or human makes a move that is not a jump, then switch to opposing player, 
 

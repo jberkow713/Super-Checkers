@@ -145,8 +145,8 @@ def find_open_spots():
     Positions = []
     Key_Numbers = []
     
-    for v in Total.values():
-        Positions.append(v)
+    Positions = [value for value in Total.values()] 
+    
     for v in Black.values():
         x = tuple([v[0], v[1]])
         Positions.remove(x)
@@ -154,9 +154,9 @@ def find_open_spots():
         x = tuple([v[0], v[1]])
         Positions.remove(x)
     for k,v in Total.items():
-        for x in Positions:
-            if x == v:
-                Key_Numbers.append(k)
+        if v in Positions:
+            Key_Numbers.append(k)
+
     Open_Positions = dict(zip(Key_Numbers, Positions))              
 
     return Open_Positions
@@ -334,18 +334,29 @@ def find_piece_movement(Coordinate):
     Final_Possible_Spots = []
     Jump_Options = []
     if Index % squares_per_row != 0 and Index % squares_per_row != (squares_per_row-1):
-        for piece in Possible_Jumps:
-                       
-            if piece % squares_per_row != 0 and piece % squares_per_row != (squares_per_row-1) \
-                and piece < (squares_per_row  * (squares_per_row-1)) and piece> (squares_per_row-1):
-            
-                Direction = piece - Index
-                Jump_to_index = piece+Direction
-                for k in Possible_Spots.keys():
-                    if Jump_to_index == k:
-                        Jump_Options.append(Jump_to_index)
-                        Final_Possible_Spots.append(piece)
-     
+        if Index > (squares_per_row-1) or Index < (squares_per_row  * (squares_per_row-1)):
+            for piece in Possible_Jumps:
+                        
+                if piece % squares_per_row != 0 and piece % squares_per_row != (squares_per_row-1) \
+                    and piece < (squares_per_row  * (squares_per_row-1)) and piece> (squares_per_row-1):
+                
+                    Direction = piece - Index
+                    Jump_to_index = piece+Direction
+                    for k in Possible_Spots.keys():
+                        if Jump_to_index == k:
+                            Jump_Options.append(Jump_to_index)
+                            Final_Possible_Spots.append(piece)
+        if Index < (squares_per_row) or Index > (squares_per_row*(squares_per_row-1)):
+            for piece in Possible_Jumps:
+                if piece % squares_per_row !=0 and piece % squares_per_row != (squares_per_row-1):
+
+                    Direction = piece - Index
+                    Jump_to_index = piece+Direction
+                    for k in Possible_Spots.keys():
+                        if Jump_to_index == k:
+                            Jump_Options.append(Jump_to_index)
+                            Final_Possible_Spots.append(piece)
+
     if Index % squares_per_row == 0 or Index % squares_per_row == (squares_per_row-1):
         if Index >=(squares_per_row)*(squares_per_row-1) or Index < squares_per_row:
             for piece in Possible_Jumps:

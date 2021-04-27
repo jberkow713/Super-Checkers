@@ -960,6 +960,32 @@ def find_center_key():
                 Red_Centers.append(x)
 
     return Black_Centers, Red_Centers
+def find_center_mass_updated(color):
+    if color == 'red':
+        Color_Dict = Red
+    if color == 'black':
+        Color_Dict = Black
+    
+    x_coord = []
+    y_coord = []
+    for value in Color_Dict.values():
+        if value[2] == 'normal':
+            x_coord.append(value[0])
+            y_coord.append(value[1])
+        if value[2] == 'King':
+            for i in range(2):
+                x_coord.append(value[0])
+                y_coord.append(value[1])
+    avg_x_coord = sum(x_coord) /len(x_coord)
+    avg_y_coord = sum(y_coord) / len(y_coord)
+
+    return avg_x_coord, avg_y_coord                 
+
+
+
+
+
+
 
 starting_color = random.randint(0,1)
 
@@ -972,7 +998,10 @@ if starting_color == 1:
 while len(Red)>0 and len(Black)>0:
 
     while Player_turn == 'black':
-               
+
+        print(find_center_mass_updated('black'))
+
+
         Move = computer_moves(color='black')
         if Move[1] == 'no jump':
             Player_turn = 'red'
@@ -987,15 +1016,16 @@ while len(Red)>0 and len(Black)>0:
                     index = Move[0]
                 if Move[1]!='jumped':
                     Jumped=False
+        
 
         Player_turn = 'red'             
 
     while Player_turn == 'red':
 
-        Move = computer_moves(color='red')
-
-       
+        print(find_center_mass_updated('red'))   
         
+        Move = computer_moves(color='red')
+       
         if Move[1] == 'no jump':
             Player_turn = 'black'
         
@@ -1009,6 +1039,7 @@ while len(Red)>0 and len(Black)>0:
                     index = Move[0]
                 if Move[1]!='jumped':
                     Jumped=False
+             
        
         Player_turn= 'black'     
         
@@ -1017,6 +1048,16 @@ while len(Red)>0 and len(Black)>0:
 # When computer or human makes a move that is not a jump, then switch to opposing player, 
 
 #Simulation of computer versus computer, to check their behavior
+
+
+#TODO create representation of possible board states, 
+# Use color's average coordinate, put emphasis on the positioning of kings, perhaps use their 
+#coordinates double, or triple the non king's position
+# For now this will be a rough estimate of the board state for any given move
+
+#We also want to incorporate spacing from opponents pieces, and spacing related to your own pieces
+#into the board state
+
 
 turtle.done()
 

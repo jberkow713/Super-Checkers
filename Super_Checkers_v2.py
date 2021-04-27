@@ -973,13 +973,25 @@ def find_center_mass_updated(color):
             x_coord.append(value[0])
             y_coord.append(value[1])
         if value[2] == 'King':
-            for i in range(2):
+            for i in range(3):
                 x_coord.append(value[0])
                 y_coord.append(value[1])
     avg_x_coord = sum(x_coord) /len(x_coord)
     avg_y_coord = sum(y_coord) / len(y_coord)
 
     return avg_x_coord, avg_y_coord                 
+
+#TODO functions that incorporate the angle represented by the collective checkers for given color,
+#kings given preference again
+
+#Function to find spacing, some kind of avg spacing for a group before it hits opponents pieces,
+#such as possible moves it can make, versus possible moves thats bring the pieces close to opponent
+#also spacing among its own pieces
+
+#and ultimately combine these various functions prior to each move, to find a given board state
+#this will help to create the table which will be used for reinforced learning
+
+
 
 
 

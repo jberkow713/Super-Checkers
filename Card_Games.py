@@ -25,11 +25,13 @@ class Deck(object):
     for x in self.cards:
       #using card's show method inside of this deck method, for each card
       x.show()
-    # print(len(self.cards))
+    print(len(self.cards))
+  
   def shuffle(self):
     for x in range(len(self.cards)-1, 0, -1):
       rand = random.randint(0, x)
-      self.cards[x], self.cards[rand] = self.cards[rand], self.cards[x] 
+      self.cards[x], self.cards[rand] = self.cards[rand], self.cards[x]
+
   def draw(self):
   
     return self.cards.pop()
@@ -38,13 +40,15 @@ class Player(object):
   def __init__(self, name):
     self.hand = []
     self.name = name
+    self.deck = Deck()
+    self.deck.shuffle()
 
   def draw(self, num_cards):
     #create deck object, shuffle deck, draws specific number of cards
-    deck = Deck()
-    deck.shuffle()
+        
     for i in range(num_cards):
-      self.hand.append(deck.draw())
+      self.hand.append(self.deck.draw())
+        
     return self
 
   def showhand(self):
@@ -53,6 +57,7 @@ class Player(object):
       card.show()
           
   def discard(self):
+    print(f' You hold {self.hand}')
     num_cards = int(input('How many cards would you like to discard?'))
         
     while num_cards>0:
@@ -73,19 +78,28 @@ class Player(object):
           num_cards-=1     
         
     return self.hand
-          
 
+  def play_5_card_draw(self):
+    
+    
+    
+    for i in range(3):
+      length = len(self.hand)
+      player.draw(5-length)
+      player.discard()
 
-
+    print(f'Your final hand is {self.hand}')
+    return self.hand  
+    
+    
 
 
 
 player = Player('Jesse')
-player.draw(5)
-player.showhand()
+player.play_5_card_draw()
 
-player.discard()
-player.showhand()
+# player.discard()
+# player.showhand()
 # for i in range(5):
 #   a = player.draw(deck)
 

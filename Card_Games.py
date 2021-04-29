@@ -89,18 +89,11 @@ class Player(object):
     player.draw(5-length)
     
     return self.hand  
-    
-    
-
 
 
 player = Player('Jesse')
 player.play_5_card_draw()
 
-# player.discard()
 player.showhand()
-# for i in range(5):
-#   a = player.draw(deck)
 
-# a.showhand()
 

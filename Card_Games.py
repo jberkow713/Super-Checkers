@@ -53,8 +53,7 @@ class Player(object):
 
   def showhand(self):
     card_list = []
-    for card in self.hand:
-      card.show()
+    print(self.hand)
           
   def discard(self):
     print(f' You hold {self.hand}')
@@ -80,15 +79,15 @@ class Player(object):
     return self.hand
 
   def play_5_card_draw(self):
-    
-    
-    
+        
     for i in range(3):
       length = len(self.hand)
       player.draw(5-length)
       player.discard()
-
-    print(f'Your final hand is {self.hand}')
+    
+    length = len(self.hand)
+    player.draw(5-length)
+    
     return self.hand  
     
     
@@ -99,7 +98,7 @@ player = Player('Jesse')
 player.play_5_card_draw()
 
 # player.discard()
-# player.showhand()
+player.showhand()
 # for i in range(5):
 #   a = player.draw(deck)
 

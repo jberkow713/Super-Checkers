@@ -6,6 +6,8 @@ class Card(object):
 
   def show(self):
     print(f"{self.value} of {self.suit}" )
+  def __repr__(self):
+    return f'{self.value} of {self.suit}'  
         
 
 class Deck(object):
@@ -23,36 +25,69 @@ class Deck(object):
     for x in self.cards:
       #using card's show method inside of this deck method, for each card
       x.show()
-    print(len(self.cards))
+    # print(len(self.cards))
   def shuffle(self):
     for x in range(len(self.cards)-1, 0, -1):
       rand = random.randint(0, x)
       self.cards[x], self.cards[rand] = self.cards[rand], self.cards[x] 
   def draw(self):
+  
     return self.cards.pop()
 
 class Player(object):
   def __init__(self, name):
     self.hand = []
     self.name = name
-  def draw(self, deck):
-    self.hand.append(deck.draw())
+
+  def draw(self, num_cards):
+    #create deck object, shuffle deck, draws specific number of cards
+    deck = Deck()
+    deck.shuffle()
+    for i in range(num_cards):
+      self.hand.append(deck.draw())
     return self
+
   def showhand(self):
     card_list = []
     for card in self.hand:
       card.show()
           
   def discard(self):
-    player.showhand()
+    num_cards = int(input('How many cards would you like to discard?'))
+        
+    while num_cards>0:
+      
+      string_hand = []
+      for x in self.hand:
+        y = str(x)
+        string_hand.append(y)
+    
+      lst = enumerate(string_hand)
+      
+      print(f'You currently hold {self.hand}')
+      card = input("Which card would you like to discard?")
+      for x in lst:
+        if card == x[1]:
+          del self.hand[x[0]]
+                    
+          num_cards-=1     
+        
+    return self.hand
+          
 
 
-deck = Deck()
-deck.shuffle()
+
+
+
+
 player = Player('Jesse')
+player.draw(5)
+player.showhand()
 
-for i in range(5):
-  a = player.draw(deck)
+player.discard()
+player.showhand()
+# for i in range(5):
+#   a = player.draw(deck)
 
-a.showhand()
+# a.showhand()
 

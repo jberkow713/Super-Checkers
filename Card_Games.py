@@ -124,6 +124,7 @@ class Player(object):
     cards = []
     
     if max_count == 1:
+      #checking for non pairs
       for key in num_counts.keys():
         cards.append(key)
     card_values = []
@@ -146,20 +147,19 @@ class Player(object):
       elif max_card<=10:
         True_Max = max_card
       
-      if Flush == True:
-        return f'{True_Max} high flush!'
-      if Flush == False:
-        return f'{True_Max} high'  
-
-    #Check for straight
-    if len(card_values)>0:
-
       if max(card_values)-min(card_values)==len(card_values)-1:
+        #Checking for straight, applying flush or non flush to straight
         if Flush == True:
           return f'{True_Max} high straight flush'
         if Flush == False:
           return f'{True_Max} high straight'  
-    
+      
+      #Applying Flush or Non Flush 
+      if Flush == True:
+        return f'{True_Max} high flush!'
+      if Flush == False:
+        return f'{True_Max} high'  
+       
 
                   
 

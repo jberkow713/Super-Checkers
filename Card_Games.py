@@ -1,4 +1,5 @@
-import random 
+import random
+from collections import Counter
 class Card(object):
   def __init__(self,suit,value):
     self.suit = suit
@@ -78,7 +79,7 @@ class Player(object):
         
     return self.hand
 
-  def play_5_card_draw(self):
+  def five_card_draw(self):
         
     for i in range(3):
       length = len(self.hand)
@@ -89,11 +90,91 @@ class Player(object):
     player.draw(5-length)
     
     return self.hand  
+  
+  def rank_hand(self):
+  
+    string_hand = []
+    for x in self.hand:
+      y = str(x)
+      y = y.replace("of","")
+      y = y.split(' ')
+      del y[1]
+      string_hand.append(y)
+
+    nums = []    
+    suits = set()
+    #Check for flush
+    for x in string_hand:
+      suits.add(x[1])
+      nums.append(x[0])
+    
+    Flush = False
+    if len(suits)==1:
+    #check for flush
+      Flush = True
+    
+       
+    num_counts = Counter(nums)    
+    max_count = max(num_counts.values())
+    counter = 0
+        
+    high_cards = []
+        
+    Conversion_Dict = {'Ace':14, 'King':13, 'Queen':12, 'Jack':11 }
+    cards = []
+    
+    if max_count == 1:
+      for key in num_counts.keys():
+        cards.append(key)
+    card_values = []
+
+    if len(cards)>0:
+
+      for x in cards:
+        if x in Conversion_Dict.keys():
+          card_values.append(Conversion_Dict[x])
+        else:
+          card_values.append(int(x))
+
+    if len(card_values)>0:
+      max_card = max(card_values)
+      
+      if max_card>10:
+        for k,v in Conversion_Dict.items():
+          if max_card == v:
+            True_Max = k
+      elif max_card<=10:
+        True_Max = max_card
+      
+      if Flush == True:
+        return f'{True_Max} high flush!'
+      if Flush == False:
+        return f'{True_Max} high'  
+
+    #Check for straight
+    if len(card_values)>0:
+
+      if max(card_values)-min(card_values)==len(card_values)-1:
+        if Flush == True:
+          return f'{True_Max} high straight flush'
+        if Flush == False:
+          return f'{True_Max} high straight'  
+    
+
+                  
+
+
+
+      
+
+       
+    
 
 
 player = Player('Jesse')
-player.play_5_card_draw()
+player.five_card_draw()
 
 player.showhand()
-
+print(player.rank_hand())
+#TODO create function that identifies player's hand, pair, full house, straight, etc
 

@@ -1,5 +1,6 @@
 import random
 from collections import Counter
+
 class Card(object):
   def __init__(self,suit,value):
     self.suit = suit
@@ -58,8 +59,17 @@ class Player(object):
           
   def discard(self):
     print(f' You hold {self.hand}')
-    num_cards = int(input('How many cards would you like to discard?'))
-        
+    length = len(self.hand)
+    lengths = []
+    for i in range(length):
+      lengths.append(i)
+
+    variable = False
+    while variable == False:
+      num_cards = int(input('How many cards would you like to discard?'))
+      if num_cards in lengths:
+        variable = True
+           
     while num_cards>0:
       
       string_hand = []
@@ -112,12 +122,34 @@ class Player(object):
     if len(suits)==1:
     #check for flush
       Flush = True
-    
-       
+               
     num_counts = Counter(nums)    
     max_count = max(num_counts.values())
-    counter = 0
-        
+    
+    #TODO
+    #We have all the rest of the returns working, just need to now qualify them based on the
+    #cards in the pairs, full houses, etc
+    value_counts = []
+    for x in num_counts.values():
+      value_counts.append(x)
+    value_counts.sort()
+    value_string = []
+    for x in value_counts:
+      y = str(x)
+      value_string.append(y)
+
+    value_join = ''.join(value_string)
+      
+
+    key_dictionary = {1112:'pair', 122:'two pair', 113: 'three of a kind',\
+      23: 'full house', 14: '4 of a kind'}
+
+    
+    for k,v in key_dictionary.items():
+      if int(value_join) == k:
+        return v    
+    
+
     high_cards = []
         
     Conversion_Dict = {'Ace':14, 'King':13, 'Queen':12, 'Jack':11 }
@@ -159,6 +191,14 @@ class Player(object):
         return f'{True_Max} high flush!'
       if Flush == False:
         return f'{True_Max} high'  
+
+      
+       
+
+    #TODO pair, two pair, three of a kind, full house, four of a kind
+    #Pair and two pair can go together
+    #Three of a kind and full house can go together
+    #Four of a kind can go together
        
 
                   

@@ -45,6 +45,7 @@ class Player(object):
     self.deck = Deck()
     self.deck.shuffle()
     self.Conversion_Dict = {'Ace':14, 'King':13, 'Queen':12, 'Jack':11 }
+    self.Chips = 1000
 
   def draw(self, num_cards):
     #create deck object, shuffle deck, draws specific number of cards
@@ -53,6 +54,14 @@ class Player(object):
       self.hand.append(self.deck.draw())
         
     return self
+  def bet(self):
+    print(f'You currently have {self.Chips} dollars')
+    variable = False
+    while variable == False:
+      wager = int(input('How much would you like to bet this round?'))
+      if wager <= self.Chips:
+        variable = True 
+    return wager    
 
   def showhand(self):
     card_list = []
@@ -237,5 +246,6 @@ player = Player('Jesse')
 player.five_card_draw()
 
 player.rank_hand()
+# player.bet()
 #TODO create function that identifies player's hand, pair, full house, straight, etc
 

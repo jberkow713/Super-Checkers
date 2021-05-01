@@ -44,6 +44,7 @@ class Player(object):
     self.name = name
     self.deck = Deck()
     self.deck.shuffle()
+    self.Conversion_Dict = {'Ace':14, 'King':13, 'Queen':12, 'Jack':11 }
 
   def draw(self, num_cards):
     #create deck object, shuffle deck, draws specific number of cards
@@ -124,11 +125,9 @@ class Player(object):
       Flush = True
                
     num_counts = Counter(nums)    
-    max_count = max(num_counts.values())
     
-    #TODO
-    #We have all the rest of the returns working, just need to now qualify them based on the
-    #cards in the pairs, full houses, etc
+    max_count = max(num_counts.values())
+        
     value_counts = []
     for x in num_counts.values():
       value_counts.append(x)
@@ -147,12 +146,44 @@ class Player(object):
     
     for k,v in key_dictionary.items():
       if int(value_join) == k:
-        return v    
-    
 
-    high_cards = []
-        
-    Conversion_Dict = {'Ace':14, 'King':13, 'Queen':12, 'Jack':11 }
+        if v == 'pair':
+          for k,v in num_counts.items():
+            if v == max_count:
+              print(self.hand)
+              print(f"pair of {k}s")
+              return self.hand
+        if v == 'two pair':
+          two_pair = []
+          for k,v in num_counts.items():
+            if v == max_count:
+              two_pair.append(k)
+          two_pair.sort()
+          print(self.hand)
+          print(f"{two_pair[1]}s and {two_pair[0]}s")
+          return self.hand
+        if v == 'three of a kind':
+          for k,v in num_counts.items():
+            if v == max_count:
+              print(self.hand)
+              print(f"Three of a kind, {k}s")
+              return self.hand
+        if v == 'full house':
+          full_house_list = []
+          for k,v in num_counts.items():
+            if v == 2:
+              full_house_list.append(k)
+            if v == 3:
+              full_house_list.append(k)
+          print(self.hand)
+          print(f"Full House, {full_house_list[0]}s and {full_house_list[1]}s")
+          return self.hand
+        if v == '4 of a kind':
+          for k,v in num_counts.items():
+            if v == max_count:
+              print(self.hand)
+              print(f"4 of a kind, {k}s")
+              return self.hand
     cards = []
     
     if max_count == 1:
@@ -164,8 +195,8 @@ class Player(object):
     if len(cards)>0:
 
       for x in cards:
-        if x in Conversion_Dict.keys():
-          card_values.append(Conversion_Dict[x])
+        if x in self.Conversion_Dict.keys():
+          card_values.append(self.Conversion_Dict[x])
         else:
           card_values.append(int(x))
 
@@ -173,7 +204,7 @@ class Player(object):
       max_card = max(card_values)
       
       if max_card>10:
-        for k,v in Conversion_Dict.items():
+        for k,v in self.Conversion_Dict.items():
           if max_card == v:
             True_Max = k
       elif max_card<=10:
@@ -182,39 +213,29 @@ class Player(object):
       if max(card_values)-min(card_values)==len(card_values)-1:
         #Checking for straight, applying flush or non flush to straight
         if Flush == True:
-          return f'{True_Max} high straight flush'
+          print(self.hand)
+          print(f'{True_Max} high straight flush')
+          return self.hand
         if Flush == False:
-          return f'{True_Max} high straight'  
-      
+          print(self.hand)
+          print(f'{True_Max} high straight')  
+          return self.hand     
       #Applying Flush or Non Flush 
       if Flush == True:
-        return f'{True_Max} high flush!'
+        print(self.hand)
+        print(f'{True_Max} high flush!')
+        return self.hand 
       if Flush == False:
-        return f'{True_Max} high'  
+        print(self.hand)
+        print(f'{True_Max} high')
+        return self.hand   
 
-      
-       
-
-    #TODO pair, two pair, three of a kind, full house, four of a kind
-    #Pair and two pair can go together
-    #Three of a kind and full house can go together
-    #Four of a kind can go together
-       
-
-                  
-
-
-
-      
-
-       
-    
+     
 
 
 player = Player('Jesse')
 player.five_card_draw()
 
-player.showhand()
-print(player.rank_hand())
+player.rank_hand()
 #TODO create function that identifies player's hand, pair, full house, straight, etc
 

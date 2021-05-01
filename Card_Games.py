@@ -46,6 +46,10 @@ class Player(object):
     self.deck.shuffle()
     self.Conversion_Dict = {'Ace':14, 'King':13, 'Queen':12, 'Jack':11 }
     self.Chips = 1000000
+    self.Reward_Dict = {"pair of Jacks": 1, "pair of Queens": 1, "pair of Kings": 1, "pair of Aces":1,\
+      "two pair":2, "Three of a kind":4, "Full House":10, "4 of a kind":15, "high flush":8,
+      "high straight": 7, "straight flush": 20, "Royal flush": 50
+      }
 
   def draw(self, num_cards):
     #create deck object, shuffle deck, draws specific number of cards
@@ -53,7 +57,7 @@ class Player(object):
     for i in range(num_cards):
       self.hand.append(self.deck.draw())
         
-    return self
+    return self.hand 
   def bet(self):
 
     print(f'You currently have {self.Chips} dollars')
@@ -67,6 +71,7 @@ class Player(object):
       wager = int(wager)
       if wager <= self.Chips:
         variable = True
+      self.Chips -= wager   
     print(f'You have bet {wager} chips')     
     return wager    
 
@@ -83,7 +88,13 @@ class Player(object):
 
     variable = False
     while variable == False:
-      num_cards = int(input('How many cards would you like to discard?'))
+      is_decimal = False
+      while is_decimal == False:
+        num_cards = input('How many cards would you like to discard?')
+        if num_cards.isdecimal() == True:
+          is_decimal = True
+
+      num_cards = int(num_cards)
       if num_cards in lengths:
         variable = True
            
@@ -107,16 +118,35 @@ class Player(object):
     return self.hand
 
   def five_card_draw(self):
-        
-    for i in range(3):
+    bet_total = 0
+    
+    player.draw(5)
+    player.showhand()
+    wager = player.bet()
+    bet_total += wager
+    player.discard()
+
+    
+    for i in range(2):
       length = len(self.hand)
       player.draw(5-length)
       player.discard()
-    
-    length = len(self.hand)
+
+    length = len(self.hand)            
     player.draw(5-length)
+    print(self.hand)
+
+    multiplier = player.evaluate_bet()
+    print(multiplier)
+    if multiplier == 0:
+      print(f'You lose {bet_total} chips. You have {self.Chips} chips remaining.')
+      return 
     
-    return self.hand  
+    final_return = multiplier * bet_total
+    self.Chips += final_return
+    print(f'Your hand was {player.rank_hand()}, you currently have {self.Chips} Chips remaining!') 
+    
+    return self.Chips   
   
   def rank_hand(self):
   
@@ -166,24 +196,21 @@ class Player(object):
         if v == 'pair':
           for k,v in num_counts.items():
             if v == max_count:
-              print(self.hand)
-              print(f"pair of {k}s")
-              return self.hand
+              return(f"pair of {k}s")
+              
         if v == 'two pair':
           two_pair = []
           for k,v in num_counts.items():
             if v == max_count:
               two_pair.append(k)
           two_pair.sort()
-          print(self.hand)
-          print(f"{two_pair[1]}s and {two_pair[0]}s")
-          return self.hand
+          return(f"two pair {two_pair[1]}s and {two_pair[0]}s")
+          
         if v == 'three of a kind':
           for k,v in num_counts.items():
             if v == max_count:
-              print(self.hand)
-              print(f"Three of a kind, {k}s")
-              return self.hand
+              return(f"Three of a kind {k}s")
+              
         if v == 'full house':
           full_house_list = []
           for k,v in num_counts.items():
@@ -191,15 +218,13 @@ class Player(object):
               full_house_list.append(k)
             if v == 3:
               full_house_list.append(k)
-          print(self.hand)
-          print(f"Full House, {full_house_list[0]}s and {full_house_list[1]}s")
-          return self.hand
+          return(f"Full House {full_house_list[0]}s and {full_house_list[1]}s")
+          
         if v == '4 of a kind':
           for k,v in num_counts.items():
             if v == max_count:
-              print(self.hand)
-              print(f"4 of a kind, {k}s")
-              return self.hand
+              return(f"4 of a kind {k}s")
+              
     cards = []
     
     if max_count == 1:
@@ -229,30 +254,53 @@ class Player(object):
       if max(card_values)-min(card_values)==len(card_values)-1:
         #Checking for straight, applying flush or non flush to straight
         if Flush == True:
-          print(self.hand)
-          print(f'{True_Max} high straight flush')
-          return self.hand
+          if max_card == 14:
+            return(f'Royal flush!')
+            
+          else:
+            return(f'{True_Max} high straight flush')
+            
         if Flush == False:
-          print(self.hand)
-          print(f'{True_Max} high straight')  
-          return self.hand     
+          return(f'{True_Max} high straight')  
+               
       #Applying Flush or Non Flush 
       if Flush == True:
-        print(self.hand)
-        print(f'{True_Max} high flush!')
-        return self.hand 
+        return(f'{True_Max} high flush!')
+         
       if Flush == False:
-        print(self.hand)
-        print(f'{True_Max} high')
-        return self.hand   
+        return(f'{True_Max} high')
+          
+  def evaluate_bet(self):
+    reward = player.rank_hand()
+    
+           
+    keys = []
+    for key in self.Reward_Dict.keys():
+      keys.append(key)
+    key = []
+    for i in range(len(keys)):
+      val = keys[i]
+      if val in reward:
+        key.append(val)
+    if len(key)>0:
+      for k,v in self.Reward_Dict.items():
+        if key[0]== k:
+          return v 
+    return 0  
+      
+      
+      
+
+      
 
      
 
 
 player = Player('Jesse')
-# player.five_card_draw()
+player.five_card_draw()
 
-# player.rank_hand()
-print(player.bet())
+# player.draw(5)
+# player.evaluate_bet()
+# print(player.bet())
 #TODO create function that identifies player's hand, pair, full house, straight, etc
 

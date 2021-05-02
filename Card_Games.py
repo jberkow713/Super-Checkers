@@ -1,5 +1,7 @@
 import random
 from collections import Counter
+import json
+
 
 class Card(object):
   def __init__(self,suit,value):
@@ -39,17 +41,46 @@ class Deck(object):
     return self.cards.pop()
 
 class Player(object):
+  
   def __init__(self, name):
     self.hand = []
     self.name = name
     self.deck = Deck()
     self.deck.shuffle()
     self.Conversion_Dict = {'Ace':14, 'King':13, 'Queen':12, 'Jack':11 }
-    self.Chips = 1000000
+    self.Chips = self.load_chips()
     self.Reward_Dict = {"pair of Jacks": 1, "pair of Queens": 1, "pair of Kings": 1, "pair of Aces":1,\
       "two pair":2, "Three of a kind":4, "Full House":10, "4 of a kind":15, "high flush":8,
       "high straight": 7, "straight flush": 20, "Royal flush": 50
       }
+    
+  def load_chips(self):
+    with open('Chips.json') as json_file:
+      chips = json.load(json_file)
+    
+    for k,v in chips.items():
+      if k == self.name:
+        return v
+      else:
+        chips[self.name]=1000000
+        with open('Chips.json', 'w') as outfile:
+          json.dump(chips, outfile)
+        return 1000000  
+  
+  def save_chips(self):
+
+    with open('Chips.json') as json_file:
+      chips = json.load(json_file)
+
+      for k,v in chips.items():
+        if k == self.name:
+          
+          chips[k]=self.Chips
+          print(chips)
+    with open('Chips.json', 'w') as outfile:
+      json.dump(chips, outfile)
+       
+
 
   def draw(self, num_cards):
     #create deck object, shuffle deck, draws specific number of cards
@@ -120,34 +151,35 @@ class Player(object):
   def five_card_draw(self):
     bet_total = 0
     
-    player.draw(5)
-    player.showhand()
-    wager = player.bet()
+    self.draw(5)
+    self.showhand()
+    wager = self.bet()
     bet_total += wager
-    player.discard()
+    self.discard()
 
     
     for i in range(2):
       length = len(self.hand)
-      player.draw(5-length)
-      player.discard()
+      self.draw(5-length)
+      self.discard()
 
     length = len(self.hand)            
-    player.draw(5-length)
+    self.draw(5-length)
     print(self.hand)
 
-    multiplier = player.evaluate_bet()
-    print(multiplier)
+    multiplier = self.evaluate_bet()
+    
     if multiplier == 0:
       print(f'You lose {bet_total} chips. You have {self.Chips} chips remaining.')
+      self.save_chips()
       return 
     
     final_return = multiplier * bet_total
     self.Chips += final_return
-    print(f'Your hand was {player.rank_hand()}, you currently have {self.Chips} Chips remaining!') 
+    print(f'Your hand was {self.rank_hand()}, you currently have {self.Chips} Chips remaining!')
+
+    self.save_chips()
     
-    return self.Chips   
-  
   def rank_hand(self):
   
     string_hand = []
@@ -185,10 +217,8 @@ class Player(object):
 
     value_join = ''.join(value_string)
       
-
     key_dictionary = {1112:'pair', 122:'two pair', 113: 'three of a kind',\
       23: 'full house', 14: '4 of a kind'}
-
     
     for k,v in key_dictionary.items():
       if int(value_join) == k:
@@ -271,7 +301,7 @@ class Player(object):
         return(f'{True_Max} high')
           
   def evaluate_bet(self):
-    reward = player.rank_hand()
+    reward = self.rank_hand()
     
            
     keys = []
@@ -288,16 +318,20 @@ class Player(object):
           return v 
     return 0  
       
-      
-      
 
-      
+# player = Player('Jesse')
+# # print(player.Chips)
+# player.five_card_draw()
+# player_2 = Player('Steve')
+# # print(player_2.draw(5))
+# player_2.five_card_draw()
+# # player_2.save_chips()
+# print(player_2.Chips)
+player = Player('Steve')
 
-     
 
-
-player = Player('Jesse')
 player.five_card_draw()
+
 
 # player.draw(5)
 # player.evaluate_bet()

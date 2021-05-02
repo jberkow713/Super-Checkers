@@ -58,14 +58,31 @@ class Player(object):
     with open('Chips.json') as json_file:
       chips = json.load(json_file)
     
+    NAME = self.name
+
+    # key_list = []
+
+    # for k,v in chips.items():
+    #   key_list.append(k)
+    # key = []
+    # for i in range(len(key_list)):
+    #   val = key_list[i]
+    #   if val in self.name:
+    #     key.append(val)
+
+    # if len(key)>0:
     for k,v in chips.items():
-      if k == self.name:
-        return v
-      else:
-        chips[self.name]=1000000
-        with open('Chips.json', 'w') as outfile:
-          json.dump(chips, outfile)
-        return 1000000  
+      if NAME== k:
+        print(f"Welcome back {self.name}")
+
+        return v 
+             
+    else:
+      print('Welcome New Player')
+      chips[self.name]=1000000
+      with open('Chips.json', 'w') as outfile:
+        json.dump(chips, outfile)
+      return 1000000  
   
   def save_chips(self):
 
@@ -76,12 +93,10 @@ class Player(object):
         if k == self.name:
           
           chips[k]=self.Chips
-          print(chips)
+          
     with open('Chips.json', 'w') as outfile:
       json.dump(chips, outfile)
-       
-
-
+  
   def draw(self, num_cards):
     #create deck object, shuffle deck, draws specific number of cards
         
@@ -104,7 +119,7 @@ class Player(object):
         variable = True
       self.Chips -= wager   
     print(f'You have bet {wager} chips')     
-    return wager    
+    return wager       
 
   def showhand(self):
     card_list = []
@@ -327,7 +342,8 @@ class Player(object):
 # player_2.five_card_draw()
 # # player_2.save_chips()
 # print(player_2.Chips)
-player = Player('Steve')
+player = Player('Amy')
+
 
 
 player.five_card_draw()

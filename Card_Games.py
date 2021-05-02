@@ -60,17 +60,6 @@ class Player(object):
     
     NAME = self.name
 
-    # key_list = []
-
-    # for k,v in chips.items():
-    #   key_list.append(k)
-    # key = []
-    # for i in range(len(key_list)):
-    #   val = key_list[i]
-    #   if val in self.name:
-    #     key.append(val)
-
-    # if len(key)>0:
     for k,v in chips.items():
       if NAME== k:
         print(f"Welcome back {self.name}")

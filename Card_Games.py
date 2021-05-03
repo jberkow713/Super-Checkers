@@ -3,7 +3,7 @@ from collections import Counter
 import json
 
 
-class Card(object):
+class Card():
   def __init__(self,suit,value):
     self.suit = suit
     self.value = value
@@ -14,7 +14,7 @@ class Card(object):
     return f'{self.value} of {self.suit}'  
         
 
-class Deck(object):
+class Deck():
   def __init__(self):
     self.cards = []
     self.build()
@@ -40,7 +40,7 @@ class Deck(object):
   
     return self.cards.pop()
 
-class Player(object):
+class Player():
   
   def __init__(self, name):
     self.hand = []
@@ -53,6 +53,7 @@ class Player(object):
       "two pair":2, "Three of a kind":4, "Full House":10, "4 of a kind":15, "high flush":8,
       "high straight": 7, "straight flush": 20, "Royal flush": 50
       }
+    
     
   def load_chips(self):
     with open('Chips.json') as json_file:
@@ -92,7 +93,8 @@ class Player(object):
     for i in range(num_cards):
       self.hand.append(self.deck.draw())
         
-    return self.hand 
+    return self.hand
+  
   def bet(self):
 
     print(f'You currently have {self.Chips} dollars')
@@ -151,7 +153,7 @@ class Player(object):
           num_cards-=1     
         
     return self.hand
-
+  
   def five_card_draw(self):
     bet_total = 0
     
@@ -303,7 +305,53 @@ class Player(object):
          
       if Flush == False:
         return(f'{True_Max} high')
-          
+  
+  def texas_holdem(self):
+
+    house = []
+    for i in range(3):
+      house.append(self.deck.draw())
+    self.draw(2)
+    #TODO insert betting
+    print(house)
+    for i in range(1):
+      house.append(self.deck.draw())
+    print(house)
+    for i in range(1):
+      house.append(self.deck.draw())
+    print(house)
+    
+    self.discard()
+    num_cards = len(self.hand)
+    
+    while num_cards>0:
+      
+      string_hand = []
+      for x in house:
+        y = str(x)
+        string_hand.append(y)
+    
+      lst = enumerate(string_hand)
+      
+      print(f'The board is  {house}')
+      print(f'You must discard {num_cards} from the board, you have {num_cards} left to discard')
+      card = input("Which card would you like to discard?")
+      for x in lst:
+        if card == x[1]:
+          del house[x[0]]
+                    
+          num_cards-=1     
+
+    self.hand = self.hand + house
+    print(self.rank_hand())
+    return self.rank_hand()
+
+    
+
+
+
+
+
   def evaluate_bet(self):
     reward = self.rank_hand()
     
@@ -335,7 +383,7 @@ player = Player('Amy')
 
 
 
-player.five_card_draw()
+player.texas_holdem()
 
 
 # player.draw(5)

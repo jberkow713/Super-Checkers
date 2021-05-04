@@ -20,7 +20,7 @@ def encode_basic(word):
         new_val = minimum * maximum * x 
         
         
-        final = new_val%1024
+        final = new_val%256
         new_vals.append(final)
     if len(new_vals)<100:
         length = len(new_vals)
@@ -44,19 +44,57 @@ def encode_basic(word):
         new_vals = []
         for x in new_vals2:
             new_vals.append(x)
-    #TODO
-    #Got sequences into len 100, now we have to do things to these sequences, so that similar letters
-    #do not appear the same
+    
+    primes_again = [11,13,17,19,23,29,31,37,41,43]
+    length = len(new_vals)
+    index1 = 0
+    
+    enumed = list(enumerate(new_vals))
+    indices = []
+    primes = [7,11,13,17,19,23]
+    
+    for x in enumed:
+        if x[1] == 0:
+            current = x[0]
+            remainder_list = []
+            for y in primes:
+                
+                z = current%y
+                remainder_list.append(z)
+                remainder_dict = dict(zip(primes, remainder_list))
+                
+                minimum = min(remainder_dict, key=remainder_dict.get)
+                
+                new_vals[x[0]]=minimum*current
+    final_primes = [11,13,17,21,23,29,31,37]
+    final_vals = []
+    for x in new_vals:
+        remainder_list = []
+        for y in final_primes:
+            z = x%y
+            remainder_list.append(z)
+            remainder_dict = dict(zip(final_primes, remainder_list))
+            
+        maximum = max(remainder_dict, key= remainder_dict.get)
+        final_vals.append(maximum)
+    length = 100
+    index = 0
+    final_list = []
+    while length >0:
+        new_val = new_vals[index]* final_vals[index]
+        new_val = new_val %256
+        final_list.append(new_val)
+        index +=1
+        length -=1
+       
            
     lst = []
-    for x in new_vals:
-        x = x % 255
-  
+    for x in final_list:
         y = chr(x)
         lst.append(y)
-        aa = ''.join(lst)
+        encrypted = ''.join(lst)
 
-    return aa, new_vals
+    return encrypted
 
-print(encode_basic('helloo my name is peter I am a zebra and a yakawekwapoekpoawkepoawk eawokpeeeeeeeeeeeeeeeeeeeeeeeeeeeeeapwokepoawkepkoawpkoepaowkekaowpkepawokepaowkepaowkepokawpekawokepoakwpeokawpeokawpoekpawkoepoawkepoakwepokawpeokwapekwaopek'))
-print(encode_basic('hello'))
+print(encode_basic('hiawepoakwpe okwaop ekapowk epoawk epokwerpoijwq epoqjw [epoqwj e[qjpow e[qwjpoe [qwoje[qwjpoe [qwpoje [qowje[q wej'))
+# print(encode_basic('hello'))

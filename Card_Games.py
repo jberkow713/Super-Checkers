@@ -89,7 +89,7 @@ class Player():
   
   def draw(self, num_cards):
     #create deck object, shuffle deck, draws specific number of cards
-        
+       
     for i in range(num_cards):
       self.hand.append(self.deck.draw())
         
@@ -262,20 +262,33 @@ class Player():
               return(f"4 of a kind {k}s")
               
     cards = []
-        
+    ace_high = ['Ace', '2', '3', '4','5']    
     if max_count == 1:
       #checking for non pairs
       for key in num_counts.keys():
         cards.append(key)
-    card_values = []
+      
     
-    #checking for the low straight here
-    if 'ace' and '2' and '3' and '4' and '5' in cards:
+    ACE_HIGH = False
+    length = len(ace_high)
+    index = 0
+    count = 0
+    while length >0:
+      val = ace_high[index]
+      for x in cards:
+        if val == x:
+          count +=1
+      length -=1
+      index+=1
+
+    if count ==5:
+      
       if Flush == True:
         return('straight flush')
       else:
         return('5 high straight')  
-
+    card_values = []
+    
     
 
     if len(cards)>0:
@@ -355,12 +368,6 @@ class Player():
     print(self.rank_hand())
     return self.rank_hand()
 
-    
-
-
-
-
-
   def evaluate_bet(self):
     reward = self.rank_hand()
     print(reward)
@@ -379,14 +386,90 @@ class Player():
         if key[0]== k:
           return v 
     return 0  
-     
 
-# print(player_2.Chips)
-player = Player('Amy')
+class Table():
+  # Loads in players based on who is in list
+  # overrides their deck with a collective deck
+  #TODO create collaborative games using 5 card hands
+
+  def __init__(self, players, table_number):
+    
+    self.players = players
+    self.table_number = table_number
+    self.deck = self.create_deck()
+    self.players = self.create_players()
+
+  def create_deck(self):
+    table_deck = Deck()
+    table_deck.shuffle()
+    deck = table_deck
+    
+    return deck
+
+    
+  def create_players(self):
+    
+    players = []
+    for x in self.players:
+      y = Player(x)
+      y.deck = self.deck
+
+                   
+      print()
+      print(f'Welcome to table {self.table_number}, {y.name}, Good luck!')
+      
+      print('--------------------------------------------------------------')
+
+      players.append(y)
+    return players  
+  def five_card_draw(self):
+    names = []
+    hands = []
+    scores = []
+    for x in self.players:
+      x.draw(5)
+      x.discard()
+      hand = len(x.hand)
+      x.draw(5-hand)
+      hand = x.hand
+      name = x.name
+      score = x.evaluate_bet()
+      names.append(name)
+      hands.append(hand)
+      scores.append(score)
+    
+    print(names, hands, scores)
 
 
 
-player.five_card_draw()
+table_1 = Table(['Billyy', 'Johnyy', 'Steve', 'Jesse', 'Amy'], 1)
+table_1.five_card_draw()
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # print(player_2.Chips)
+# player = Player('Amy')
+
+
+
+# player.five_card_draw()
 
 
 # player.draw(5)

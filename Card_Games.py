@@ -262,12 +262,21 @@ class Player():
               return(f"4 of a kind {k}s")
               
     cards = []
-    
+        
     if max_count == 1:
       #checking for non pairs
       for key in num_counts.keys():
         cards.append(key)
     card_values = []
+    
+    #checking for the low straight here
+    if 'ace' and '2' and '3' and '4' and '5' in cards:
+      if Flush == True:
+        return('straight flush')
+      else:
+        return('5 high straight')  
+
+    
 
     if len(cards)>0:
 
@@ -294,7 +303,7 @@ class Player():
             return(f'Royal flush!')
             
           else:
-            return(f'{True_Max} high straight flush')
+            return('straight flush')
             
         if Flush == False:
           return(f'{True_Max} high straight')  
@@ -354,6 +363,7 @@ class Player():
 
   def evaluate_bet(self):
     reward = self.rank_hand()
+    print(reward)
     
            
     keys = []
@@ -369,21 +379,14 @@ class Player():
         if key[0]== k:
           return v 
     return 0  
-      
+     
 
-# player = Player('Jesse')
-# # print(player.Chips)
-# player.five_card_draw()
-# player_2 = Player('Steve')
-# # print(player_2.draw(5))
-# player_2.five_card_draw()
-# # player_2.save_chips()
 # print(player_2.Chips)
 player = Player('Amy')
 
 
 
-player.texas_holdem()
+player.five_card_draw()
 
 
 # player.draw(5)

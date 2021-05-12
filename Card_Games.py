@@ -269,7 +269,7 @@ class Player():
         cards.append(key)
       
     
-    ACE_HIGH = False
+    
     length = len(ace_high)
     index = 0
     count = 0
@@ -397,7 +397,7 @@ class Table():
     self.players = players
     self.table_number = table_number
     self.deck = self.create_deck()
-    self.players = self.create_players()
+    self.Players = self.create_players()
 
   def create_deck(self):
     table_deck = Deck()
@@ -426,19 +426,80 @@ class Table():
     names = []
     hands = []
     scores = []
-    for x in self.players:
+    bonus_pot = 0
+    for x in self.Players:
+      
+      print(f"It is now {x.name}'s turn")
+      bet_total = 1000 
       x.draw(5)
+      x.showhand()
+      wager = x.bet()
+      bet_total += wager
+      bonus_pot += bet_total
       x.discard()
       hand = len(x.hand)
       x.draw(5-hand)
-      hand = x.hand
-      name = x.name
-      score = x.evaluate_bet()
-      names.append(name)
-      hands.append(hand)
-      scores.append(score)
+      multiplier = x.evaluate_bet()
+      
+      names.append(x.name)
+      scores.append(multiplier)
     
-    print(names, hands, scores)
+      if multiplier == 0:
+        print(f'You lose {bet_total} chips. You have {x.Chips} chips remaining.')
+        x.save_chips()
+        
+      final_return = multiplier * bet_total
+      x.Chips += final_return
+      print(f'Your hand was {x.rank_hand()}, you currently have {x.Chips} Chips remaining!')
+
+      x.save_chips()
+       
+    
+    
+    score_dict = dict(zip(names, scores))
+    
+    print(score_dict)
+
+
+
+    max_scores = []
+    for v in score_dict.values():
+      max_scores.append(v)
+    high_score = max(max_scores)
+    
+    
+
+
+    if high_score >0:
+      winning_players = []
+          
+      for k,v in score_dict.items():
+        if v == high_score:
+          winning_players.append(k)
+      length_winners = len(winning_players)
+      added_pot = bonus_pot/length_winners
+
+      
+      for x in self.Players:
+        name = x.name
+        if name in winning_players:
+          x.Chips += added_pot
+
+          print(f'Congratulations {x.name}. You had the best hand at the table, you are rewarded an additional {added_pot}!')
+
+          x.save_chips()
+
+
+
+
+
+
+
+
+    
+
+    
+    
 
 
 

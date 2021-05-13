@@ -468,9 +468,7 @@ class Table():
     high_score = max(max_scores)
     
     
-
-
-    if high_score >0:
+    if high_score >2:
       winning_players = []
           
       for k,v in score_dict.items():
